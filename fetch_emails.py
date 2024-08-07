@@ -1,15 +1,18 @@
 import mysql.connector
 from mysql.connector import Error
-import json
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def fetch_emails():
     try:
         connection = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='admin',
-            database='mailparser'
+            host=os.getenv('DB_HOST'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASS'),
+            database=os.getenv('DB_NAME')
         )
 
         if connection.is_connected():
@@ -22,8 +25,6 @@ def fetch_emails():
                 for key, value in email.items():
                     if isinstance(value, datetime):
                         email[key] = value.isoformat()
-
-            
 
     except Error as e:
         print(json.dumps({"message": f"Error fetching emails: {e}"}))

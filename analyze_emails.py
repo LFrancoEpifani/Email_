@@ -1,13 +1,17 @@
 import mysql.connector
 from mysql.connector import Error
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def analyze_emails():
     try:
         connection = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='admin',
-            database='mailparser'
+            host=os.getenv('DB_HOST'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASS'),
+            database=os.getenv('DB_NAME')
         )
 
         if connection.is_connected():
