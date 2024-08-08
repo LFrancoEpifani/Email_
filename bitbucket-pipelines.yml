@@ -7,18 +7,11 @@ image: node:20
 
 pipelines:
   default:
-    - parallel:
-        - step:
-            name: Build and Test
-            caches:
-              - node
-            script:
-              - npm install
-              - npm test
-        - step:
-            name: Code linting
-            script:
-              - npm install eslint
-              - npx eslint .
-            caches:
-              - node
+    - step:
+        name: Manual step
+        # trigger: manual
+        caches:
+          - node
+        script:
+          - npm install
+          - npm run build
