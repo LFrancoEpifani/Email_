@@ -9,7 +9,7 @@ pipelines:
   default:
     - step:
         script:
-          - echo 'Commit by $BITBUCKET_BRANCH'
+          - echo "Commit ${BITBUCKET_COMMIT}"
     - step:
         name: Manual step
         trigger: manual
