@@ -5,7 +5,7 @@
 /build
 
 # OS
-.DS_Store
+store
 Thumbs.db
 
 # Vite
@@ -56,3 +56,5 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+
+.env
