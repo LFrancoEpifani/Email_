@@ -9,10 +9,10 @@ pipelines:
   default:
     - step:
         script:
-          - echo ${BITBUCKET_COMMIT}
           - echo "Commit $BITBUCKET_COMMIT"
-          - echo "Commit ${BITBUCKET_COMMIT}"
-          - echo "Commit "${BITBUCKET_COMMIT}
+          - echo "Branch $BITBUCKET_BRANCH"
+          - echo "TAG $BITBUCKET_TAG"
+          - echo "User triggering $BITBUCKET_STEP_TRIGGERER_UUID"
     - step:
         name: Manual step
         trigger: manual
