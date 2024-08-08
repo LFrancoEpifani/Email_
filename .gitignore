@@ -8,6 +8,9 @@
 store
 Thumbs.db
 
+# File .env
+.env
+
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
@@ -57,4 +60,3 @@ Thumbs.db
 *.mov
 *.wmv
 
-.env
