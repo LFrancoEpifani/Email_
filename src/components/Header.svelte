@@ -71,13 +71,13 @@
     <div class="flex gap-3 items-center">
       <button 
         on:click={toggleTheme} 
-        class="text-3xl text-gray-900 dark:text-white focus:outline-none"
+        class="text-2xl text-gray-900 dark:text-white focus:outline-none"
         aria-label="Toggle Theme"
       >
         {#if $theme === 'light'}
-          <i class="fa-solid fa-sun"></i>
+          <i class="fa-solid fa-sun text-yellow-500"></i>
         {:else}
-          <i class="fa-solid fa-moon"></i>
+          <i class="fa-solid fa-moon text-blue-500"></i>
         {/if}
       </button>
       <button 
