@@ -8,7 +8,7 @@
 store
 Thumbs.db
 
-# File .env
+#.env
 .env
 
 # Vite
