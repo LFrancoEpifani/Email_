@@ -1,0 +1,48 @@
+#  Template NodeJS build
+
+#  This template allows you to validate your NodeJS code.
+#  The workflow allows running tests and code linting on the default branch.
+
+image: node:20
+
+pipelines:
+  default:
+    - step:
+        script:
+          - echo "Commit $BITBUCKET_COMMIT"
+          - echo "Branch $BITBUCKET_BRANCH"
+          - echo "TAG $BITBUCKET_TAG"
+          - echo "User triggering $BITBUCKET_STEP_TRIGGERER_UUID"
+    - step:
+        name: Default Step manual
+        trigger: manual
+        caches:
+          - node
+        script:
+          - npm install
+          - npm run build
+  branches:
+    snarchio:
+      - step:
+          script:
+            - echo "Commit $BITBUCKET_COMMIT"
+            - echo "Branch $BITBUCKET_BRANCH"
+            - echo "TAG $BITBUCKET_TAG"
+            - echo "User triggering $BITBUCKET_STEP_TRIGGERER_UUID"
+      - step:
+          name: Branches Snarchio Step manual
+          trigger: manual
+          caches:
+            - node
+          script:
+            - npm install
+            - npm run build          
+  custom:
+    manual:      
+      - step:
+          name: Common Manual Step
+          caches:
+            - node
+          script:
+            - npm install
+            - npm run build
