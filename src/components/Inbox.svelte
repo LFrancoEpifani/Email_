@@ -73,7 +73,7 @@
     const styles = {
       TechRequest: 'bg-[#E6E4FB] text-[#463C86] border-[#A79CF1]',
       Certificate: 'bg-[#FBF6D8] text-[#C2A520] border-[#EBD968]',
-      Forwarded: 'bg-[#75C9A1] text-[#2B8E28] border-[#DCF7E9]',
+      Forwarded: 'bg-[#a4e5c6] text-[#2B8E28] border-[#DCF7E9]',
       Registration: 'bg-[#FFDDCC] text-[#D47528] border-[#F3B180]'
     };
     return styles[tag] || 'bg-gray-300 text-black border-gray-500'; 
@@ -110,8 +110,8 @@
       <tbody class="text-gray-700 dark:text-white">
         {#each sortedEmails as email}
           <tr class="border-b border-gray-200 hover:bg-gray-100 hover:dark:bg-gray-700">
-            <td class="px-4 py-2 text-lg font-medium">{email.emlFrom}</td>
-            <td class="px-4 py-2 text-xl font-semibold text-blue-600">{email.emlSubject}</td>
+            <td class="px-4 py-2 text-lg font-bold">{email.emlFrom}</td>
+            <td class="px-4 py-2 text-xl font-regular text-blue-600">{email.emlSubject}</td>
             <td class="px-4 py-2 text-lg">
               <ExpandableText text={email.automaticComments} maxLength={35} />
             </td>
