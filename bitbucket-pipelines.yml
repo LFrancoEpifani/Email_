@@ -8,8 +8,11 @@ image: node:20
 pipelines:
   default:
     - step:
+        script:
+          - echo 'Commit by $BITBUCKET_BRANCH'
+    - step:
         name: Manual step
-        # trigger: manual
+        trigger: manual
         caches:
           - node
         script:
