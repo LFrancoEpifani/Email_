@@ -20,7 +20,8 @@ pipelines:
             SERVER: $SERVER_SNARCHIO
             EXTRA_ARGS: ["-P", "123"]
             REMOTE_PATH: '/home/atlassianci'
-            LOCAL_PATH: 'src/*'          
+            LOCAL_PATH: 'src/*'
+            DEBUG: 'true'
     - step:
         name: Default Step manual
         trigger: manual
