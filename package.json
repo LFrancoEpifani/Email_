@@ -10,6 +10,7 @@
 	"devDependencies": {
 		"@iconify/svelte": "^4.0.2",
 		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-node": "^5.2.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"autoprefixer": "^10.4.19",
@@ -21,8 +22,10 @@
 	"type": "module",
 	"dependencies": {
 		"axios": "^1.7.2",
+		"cors": "^2.8.5",
 		"date-fns": "^3.6.0",
 		"dotenv": "^16.4.5",
+		"express": "^4.19.2",
 		"mysql2": "^3.11.0",
 		"svelte-local-storage-store": "^0.6.4",
 		"svelte-routing": "^2.13.0"
