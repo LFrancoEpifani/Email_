@@ -17,6 +17,7 @@ pipelines:
           variables:
             USER: $USER_SNARCHIO
             SERVER: $SERVER_SNARCHIO
+            EXTRA_ARGS: ["-P", "123"]
             REMOTE_PATH: '/home/atlassianci'
             LOCAL_PATH: 'src/*'          
     - step:
