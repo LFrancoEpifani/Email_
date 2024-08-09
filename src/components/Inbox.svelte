@@ -6,7 +6,7 @@
   
   export let handleAnalyzeEmails;
   let errorMessage = '';
-  export let data;
+  export let data = { data: [] }; 
   let tableElement;
   let notes = {};
 
@@ -79,8 +79,7 @@
     return styles[tag] || 'bg-gray-300 text-black border-gray-500'; 
   }
 
-  let sortedEmails = sortEmailsDate(data.data);
-  let totalEmails = data.data.length;
+  let sortedEmails = data && data.data ? sortEmailsDate(data.data) : []; 
 
   function toggleEmailSelection(id) {
     selectedEmails.update(selected => selected.includes(id) ? selected.filter(emailId => emailId !== id) : [...selected, id]);
@@ -95,9 +94,9 @@
 </script>
 
 <main class="h-full w-full overflow-hidden">
-  <div class="overflow-y-auto h-full w-full">
+  <div class="overflow-y-auto h-full w-full ">
     <table class="bg-white dark:bg-gray-800 w-full hidden rounded-lg" bind:this={tableElement}>
-      <thead class="text-black dark:text-white border-b">
+      <thead class="text-black dark:text-white border-b w-auto">
         <tr class="text-xl">
           <th class="w-2/12 p-4 text-left">From</th>
           <th class="w-5/12 p-4 text-left">Subject</th>
@@ -105,6 +104,7 @@
           <th class="w-2/12 p-4 text-left">Tags</th>
           <th class="w-1/12 p-4 text-left">Date</th>
           <th class="w-1/12 p-4 text-left">Notes</th>
+          <th class="w-1/12 p-4 text-left"></th>
         </tr>
       </thead>
       <tbody class="text-gray-700 dark:text-white">
