@@ -1,8 +1,5 @@
 #  Template NodeJS build
 
-#  This template allows you to validate your NodeJS code.
-#  The workflow allows running tests and code linting on the default branch.
-
 image: node:20
 
 pipelines:
@@ -17,7 +14,7 @@ pipelines:
         name: Deploy artifacts using SCP to PROD        
         script:
         - pipe: atlassian/scp-deploy:0.3.3
-            variables:
+          variables:
             USER: $USER_SNARCHIO
             SERVER: $SERVER_SNARCHIO
             REMOTE_PATH: '/home/atlassianci'
