@@ -13,7 +13,7 @@ pipelines:
     - step:
         name: Deploy artifacts using SCP to PROD        
         script:
-        - pipe: atlassian/scp-deploy:0.3.3
+        - pipe: atlassian/scp-deploy:1.5.1
           variables:
             USER: $USER_SNARCHIO
             SERVER: $SERVER_SNARCHIO
