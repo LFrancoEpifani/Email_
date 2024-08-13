@@ -11,17 +11,29 @@ pipelines:
           - echo "TAG $BITBUCKET_TAG"
           - echo "User triggering $BITBUCKET_STEP_TRIGGERER_UUID"
     - step:
-        name: Deploy artifacts using SCP to PROD        
+        name: Deploy artifacts using SCP to PROD
         script:
-        - pipe: atlassian/scp-deploy:1.5.1
-          variables:
-            USER: $USER_SNARCHIO
-            SSH_KEY: $SSH_KEY_SNARCHIO
-            SERVER: $SERVER_SNARCHIO
-            EXTRA_ARGS: ["-P", "123"]
-            REMOTE_PATH: '/var/www/mail-dashboard-svelte/'
-            LOCAL_PATH: '${BITBUCKET_CLONE_DIR}/*'
-            DEBUG: 'true'
+          - pipe: atlassian/scp-deploy:1.5.1
+            variables:
+              USER: $USER_SNARCHIO
+              SSH_KEY: $SSH_KEY_SNARCHIO
+              SERVER: $SERVER_SNARCHIO
+              EXTRA_ARGS: ["-P", "123"]
+              REMOTE_PATH: "/var/www/mail-dashboard-svelte/"
+              LOCAL_PATH: "${BITBUCKET_CLONE_DIR}/*"
+              DEBUG: "true"
+    - step:
+        name: Run commands on server
+        script:
+          - pipe: atlassian/ssh-run:0.8.1
+            variables:
+              USER: $USER_SNARCHIO
+              SSH_KEY: $SSH_KEY_SNARCHIO
+              SERVER: $SERVER_SNARCHIO
+              PORT: 123
+              MODE: "script"
+              COMMAND: "remote-script.sh"
+              DEBUG: "true"
     - step:
         name: Default Step manual
         trigger: manual
@@ -45,9 +57,9 @@ pipelines:
             - node
           script:
             - npm install
-            - npm run build          
+            - npm run build
   custom:
-    manual:      
+    manual:
       - step:
           name: Common Manual Step
           caches:
