@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* GENERAL */
+
 
 html, body {
     height: 100%;
@@ -18,7 +18,7 @@ html, body {
 
 h1, h2, h3 {
     font-family: 'Poppins', sans-serif;
-    margin-bottom: 1rem; /* Adding margin bottom for better spacing */
+    margin-bottom: 1rem;
 }
 
 span {
@@ -27,25 +27,25 @@ span {
 
 a {
     text-decoration: none;
-    color: inherit; /* Ensuring links inherit text color */
+    color: inherit;
 }
 
 button {
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Smooth transition for background color */
+    transition: background-color 0.3s ease;
 }
 
 input, textarea {
-    transition: border-color 0.3s ease; /* Smooth transition for border color */
+    transition: border-color 0.3s ease; 
 }
 
 input:focus, textarea:focus {
     outline: none;
-    border-color: #3182ce; /* Tailwind's blue-500 */
+    border-color: #3182ce; 
 }
 
 ul {
-    list-style: none; /* Removing default list styles */
+    list-style: none; 
 }
 
 .btn-red {
@@ -56,25 +56,25 @@ ul {
 
 /* Dark mode support */
 .dark-mode {
-    background-color: #1a202c; /* Tailwind's gray-900 */
-    color: #a0aec0; /* Tailwind's gray-400 */
+    background-color: #1a202c; 
+    color: #a0aec0; 
 }
 
 .dark-mode h1, .dark-mode h2, .dark-mode h3 {
-    color: #edf2f7; /* Tailwind's gray-100 */
+    color: #edf2f7;
 }
 
 .dark-mode .btn-red {
-    color: #f56565; /* Tailwind's red-400 */
+    color: #f56565; 
     border-color: #f56565;
 }
 
 .dark-mode .btn-red:hover {
     background-color: #f56565;
-    color: #1a202c; /* Tailwind's gray-900 */
+    color: #1a202c; 
 }
 
-/* Additional utility classes */
+
 .text-ellipsis {
     white-space: nowrap;
     overflow: hidden;
@@ -88,8 +88,6 @@ ul {
 }
 
 
-
-
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -98,17 +96,17 @@ ul {
 .table th, .table td {
     padding: 0.75rem;
     text-align: left;
-    border-bottom: 1px solid #e2e8f0; /* Tailwind's gray-200 */
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .table th {
-    background-color: #edf2f7; /* Tailwind's gray-100 */
+    background-color: #edf2f7;
 }
 
 .dark-mode .table th, .dark-mode .table td {
-    border-color: #4a5568; /* Tailwind's gray-600 */
+    border-color: #4a5568;
 }
 
 .dark-mode .table th {
-    background-color: #2d3748; /* Tailwind's gray-800 */
+    background-color: #2d3748;
 }

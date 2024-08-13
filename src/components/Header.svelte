@@ -1,32 +1,20 @@
 <script>
   import { theme } from '../store/store.js';
-  import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
+  let showDropdown = false;
 
   function toggleTheme() {
     theme.update(current => current === 'light' ? 'dark' : 'light');
   }
 
-  let showDropdown = false;
-  let tagFilter = '';
-
-  function applyFilter(tag) {
-    tagFilter = tag;
-    const params = new URLSearchParams();
-    if (tagFilter) {
-      params.set('tagFilter', tagFilter);
-    }
-    window.location.href = `?${params.toString()}`; 
+  function toggleDropdown() {
+    showDropdown = !showDropdown;
   }
-
-  $: tagFilter = $page.url.searchParams.get('tagFilter') || '';
 </script>
 
-<header class="bg-white dark:bg-gray-800 shadow-md">
+<header class="bg-white dark:bg-[#083153] shadow-md">
   <div class="flex justify-between items-center p-4">
-    <button class="text-2xl font-bold text-gray-900 dark:text-white px-4 py-2 focus:outline-none">
-   <a href="/">Email Manager</a>
-    </button>
+    <a href="/" class="text-2xl font-bold text-gray-900 dark:text-white px-4 py-2 focus:outline-none">Email Manager</a>
+
     <form class="w-[800px]">
       <div class="flex">
         <div class="relative w-full max-w-2xl mr-4">
@@ -39,35 +27,19 @@
             class="w-full py-3 pl-12 text-lg text-gray-900 border border-gray-300 rounded-lg bg-transparent dark:text-white dark:border-gray-700 dark:bg-gray-800 focus:outline-none" 
             placeholder="Search..." 
             required
+            aria-label="Search through emails"
           />
         </div>
         <div class="relative">
-          <button type="button" on:click={() => showDropdown = !showDropdown} class="flex items-center justify-between gap-2 w-[150px] py-3 text-lg text-gray-900 border border-gray-300 rounded-lg px-4 bg-transparent dark:text-white dark:border-gray-700 dark:bg-gray-800 focus:outline-none">
+          <button type="button" on:click={toggleDropdown} class="flex items-center justify-between gap-2 w-[150px] py-3 text-lg text-gray-900 border border-gray-300 rounded-lg px-4 bg-transparent dark:text-white dark:border-gray-700 dark:bg-gray-800 focus:outline-none">
             <span>Filter</span>
             <i class="fa-solid fa-angle-down"></i>
           </button>
-          {#if showDropdown}
-            <ul class="absolute mt-1 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-lg">
-              <li>
-                <button type="button" on:click={() => applyFilter('')} class="block text-lg w-full text-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">All tags</button>
-              </li>
-              <li>
-                <button type="button" on:click={() => applyFilter('TechRequest')} class="block text-lg w-full text-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">TechRequest</button>
-              </li>
-              <li>
-                <button type="button" on:click={() => applyFilter('Certificate')} class="block text-lg w-full text-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">Certificate</button>
-              </li>
-              <li>
-                <button type="button" on:click={() => applyFilter('Forwarded')} class="block text-lg w-full text-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">Forwarded</button>
-              </li>
-              <li>
-                <button type="button" on:click={() => applyFilter('Registration')} class="block text-lg w-full text-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700">Registration</button>
-              </li>
-            </ul>
-          {/if}
+          
         </div>
       </div>
     </form>
+
     <div class="flex gap-3 items-center">
       <button 
         on:click={toggleTheme} 
@@ -91,5 +63,5 @@
 </header>
 
 <style>
-
+ 
 </style>

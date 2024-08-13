@@ -13,6 +13,9 @@
   async function fetchNotes(emailId) {
     try {
       const response = await fetch(`/api/notes?emailId=${emailId}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch notes for emailId ${emailId}`);
+      }
       const result = await response.json();
       notes = {
         ...notes,
@@ -20,6 +23,10 @@
       };
     } catch (error) {
       console.error(`Error fetching notes for emailId ${emailId}:`, error);
+      notes = {
+        ...notes,
+        [emailId]: []
+      };
     }
   }
 
@@ -58,7 +65,7 @@
   }
 
   function sortEmailsDate(emails) {
-    return emails.sort((a, b) => new Date(b.emlDate) - new Date(a.emlDate));
+    return [...emails].sort((a, b) => new Date(b.emlDate) - new Date(a.emlDate));
   }
 
   function formatDate(dateStr) {
@@ -95,12 +102,12 @@
 
 <main class="h-full w-full overflow-hidden">
   <div class="overflow-y-auto h-full w-full ">
-    <table class="bg-white dark:bg-gray-800 w-full hidden rounded-lg" bind:this={tableElement}>
+    <table class="bg-white dark:bg-gradient-to-b from-[#083153] to-[#082038] w-full hidden rounded-lg" bind:this={tableElement}>
       <thead class="text-black dark:text-white border-b w-auto">
         <tr class="text-xl">
           <th class="w-2/12 p-4 text-left">From</th>
-          <th class="w-5/12 p-4 text-left">Subject</th>
-          <th class="w-2/12 p-4 text-left">Text</th>
+          <th class="w-3/12 p-4 text-left">Subject</th>
+          <th class="w-3/12 p-4 text-left">Text</th>
           <th class="w-2/12 p-4 text-left">Tags</th>
           <th class="w-1/12 p-4 text-left">Date</th>
           <th class="w-1/12 p-4 text-left">Notes</th>
@@ -109,13 +116,13 @@
       </thead>
       <tbody class="text-gray-700 dark:text-white">
         {#each sortedEmails as email}
-          <tr class="border-b border-gray-200 hover:bg-gray-100 hover:dark:bg-gray-700">
+          <tr class="border-b border-gray-200 hover:bg-gray-100 hover:dark:bg-gray-900">
             <td class="px-4 py-2 text-lg font-bold">{email.emlFrom}</td>
-            <td class="px-4 py-2 text-xl font-regular text-blue-600">{email.emlSubject}</td>
+            <td class="px-4 py-2 text-xl font-regular text-[#4b89f4]">{email.emlSubject}</td>
             <td class="px-4 py-2 text-lg">
               <ExpandableText text={email.automaticComments} maxLength={35} />
             </td>
-            <td class="px-4 py-2">
+            <td class="px-4">
               {#each email.manualTags.split(',') as tag}
                 <span class="tag {getTagStyles(tag)}">{tag}</span>
               {/each}

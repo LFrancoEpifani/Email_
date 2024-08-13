@@ -11,58 +11,58 @@
   export let data;
 
   onMount(async () => {
-  try {
-    emails = await fetchEmails();
-    data = emails;
-  } catch (error) {
-    errorMessage = error.message;
-  }
-});
-
-async function handleAnalyzeEmails() {
-  try {
-    const response = await fetch('/api/run_script', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ scriptName: 'analyze_emails.py' })
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      window.location.reload(); 
-    } else {
-      errorMessage = result.message;
+    try {
+      const fetchedEmails = await fetchEmails();
+      emails = fetchedEmails;
+    } catch (error) {
+      errorMessage = error.message;
     }
-  } catch (error) {
-    errorMessage = error.message;
-  }
-}
+  });
 
-onMount(() => {
-  if (typeof document !== 'undefined') {
-    if ($theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+  async function handleAnalyzeEmails() {
+    try {
+      const response = await fetch('/api/run_script', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ scriptName: 'analyze_emails.py' })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        emails = await fetchEmails();
+      } else {
+        errorMessage = result.message;
+      }
+    } catch (error) {
+      errorMessage = error.message;
     }
   }
-});
 
-$: {
-  if (typeof document !== 'undefined') {
-    if ($theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+  onMount(() => {
+    if (typeof document !== 'undefined') {
+      if ($theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  });
+
+  $: {
+    if (typeof document !== 'undefined') {
+      if ($theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
   }
-}
 </script>
 
-<main class="contenedor bg-white dark:bg-[#1f2937] text-black dark:text-white">
+<main class="contenedor bg-white dark:bg-gradient-to-b from-[#083153] to-[#082038] text-black dark:text-white">
   <Header />
   <section class="inbox-container flex-grow overflow-hidden p-3">
     {#if errorMessage}

@@ -1,27 +1,32 @@
 import { writable } from "svelte/store";
 
-const storedSelectedEmails = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem("selectedEmails")) || [] : [];
-export const selectedEmails = writable(storedSelectedEmails);
 
-if (typeof localStorage !== 'undefined') {
-    selectedEmails.subscribe(value => {
-        localStorage.setItem("selectedEmails", JSON.stringify(value));
-    });
+function isLocalStorageAvailable() {
+  try {
+    const testKey = '__storage_test__';
+    localStorage.setItem(testKey, 'test');
+    localStorage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
 
 
-const storedTheme = typeof localStorage !== 'undefined' ? localStorage.getItem('theme') || 'light' : 'light';
-export const theme = writable(storedTheme);
+export const selectedEmails = writable(isLocalStorageAvailable() ? JSON.parse(localStorage.getItem("selectedEmails")) || [] : []);
 
-if (typeof localStorage !== 'undefined') {
-  theme.subscribe(value => {
+selectedEmails.subscribe(value => {
+  if (isLocalStorageAvailable()) {
+    localStorage.setItem("selectedEmails", JSON.stringify(value));
+  }
+});
+
+
+export const theme = writable(isLocalStorageAvailable() ? localStorage.getItem('theme') || 'light' : 'light');
+
+theme.subscribe(value => {
+  if (isLocalStorageAvailable()) {
     localStorage.setItem('theme', value);
-    if (value === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  });
-}
-
-
+    document.documentElement.classList.toggle('dark', value === 'dark');
+  }
+});

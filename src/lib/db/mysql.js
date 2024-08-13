@@ -1,13 +1,13 @@
-import mysql from "mysql2/promise";
-import dotenv from "dotenv";
+import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
-let mysqlconn = null;
+let pool;
 
 export function mysqlconnFn() {
-  if (!mysqlconn) {
-    mysqlconn = mysql.createConnection({
+  if (!pool) {
+    pool = mysql.createPool({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
@@ -15,5 +15,5 @@ export function mysqlconnFn() {
     });
   }
 
-  return mysqlconn;
+  return pool;
 }

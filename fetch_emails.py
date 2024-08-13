@@ -4,9 +4,10 @@ from datetime import datetime
 from dotenv import load_dotenv
 import os
 
+
 load_dotenv()
 
-def fetch_emails():
+def create_db_connection():
     try:
         connection = mysql.connector.connect(
             host=os.getenv('DB_HOST'),
@@ -14,25 +15,45 @@ def fetch_emails():
             password=os.getenv('DB_PASS'),
             database=os.getenv('DB_NAME')
         )
-
         if connection.is_connected():
-            cursor = connection.cursor(dictionary=True)
-            cursor.execute('SELECT * FROM email')
-            emails = cursor.fetchall()
+            return connection
+    except Error as e:
+        print(f"Error connecting to database: {e}")
+        return None
 
-            # Convert datetime fields to strings
-            for email in emails:
-                for key, value in email.items():
-                    if isinstance(value, datetime):
-                        email[key] = value.isoformat()
+def fetch_emails(connection):
+    """Obtiene los correos electrónicos desde la base de datos y retorna una lista de diccionarios."""
+    try:
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute('SELECT * FROM email')
+        emails = cursor.fetchall()
+
+    
+        for email in emails:
+            email = format_email_dates(email)
+        return emails
 
     except Error as e:
-        print(json.dumps({"message": f"Error fetching emails: {e}"}))
+        print(f"Error fetching emails: {e}")
+        return []
 
     finally:
-        if connection.is_connected():
+        if cursor:
             cursor.close()
-            connection.close()
+
+def format_email_dates(email):
+    """Convierte los campos de fecha y hora al formato ISO."""
+    for key, value in email.items():
+        if isinstance(value, datetime):
+            email[key] = value.isoformat()
+    return email
+
+def main():
+    connection = create_db_connection()
+    if connection:
+        emails = fetch_emails(connection)
+        print(emails) 
+        connection.close()
 
 if __name__ == "__main__":
-    fetch_emails()
+    main()
