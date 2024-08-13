@@ -21,6 +21,8 @@ pipelines:
               PORT: 123
               MODE: "script"
               COMMAND: "remote-script.sh"
+              EXTRA_ARGS:
+                - "-p $INSTALL_PATH"
               DEBUG: "true"
     - step:
         name: Deploy artifacts using SCP to PROD
@@ -32,7 +34,7 @@ pipelines:
               SSH_KEY: $SSH_KEY_SNARCHIO
               SERVER: $SERVER_SNARCHIO
               EXTRA_ARGS: ["-P", "123"]
-              REMOTE_PATH: "/var/www/mail-dashboard-svelte/"
+              REMOTE_PATH: $INSTALL_PATH
               LOCAL_PATH: "${BITBUCKET_CLONE_DIR}/*"
               DEBUG: "true"
     - step:
