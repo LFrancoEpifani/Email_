@@ -1,19 +1,19 @@
 #!/bin/bash
 Help()
 {  # Display Help
-   echo "Syntax: $(basename "$0") [-p|h]"
+   echo "Syntax: $(basename "$0") [-d|h]"
    echo "options:"
-   echo "p  install Path"
+   echo "d  install Path"
    echo "h  print this Help"
    echo
 }
 
-while getopts ":p:h" option; do
+while getopts ":d:h" option; do
   case $option in
     h) # display Help
 	    Help
         exit;;
-    p) # Enter a name
+    d) # Enter a name
         path=$OPTARG;;		 
     \?) # Invalid option
 	    echo "Error: Invalid option"
