@@ -21,8 +21,8 @@ pipelines:
               PORT: 123
               MODE: 'script'
               COMMAND: 'remote-script.sh'
-              EXTRA_ARGS:
-                - '-p $INSTALL_PATH'
+              # EXTRA_ARGS:
+              #   - '-p $INSTALL_PATH'
               DEBUG: 'true'
     - step:
         name: Deploy artifacts using SCP to PROD
