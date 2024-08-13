@@ -21,7 +21,15 @@ while getopts ":p:h" option; do
   esac
 done
 
-printf "parameter is $path\n"
+echo '11'
+printf "all params $@"
+echo '22'
+echo $@
+echo '33'
+printf "parameter is $path"
+echo '44'
+echo $path
+echo '55'
 
 if [ ! -d "$path" ]; then
   printf "$path does not exist\n"
