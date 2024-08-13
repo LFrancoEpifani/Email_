@@ -31,6 +31,20 @@ echo '44'
 echo $path
 echo '55'
 
+for i; do 
+   echo $i 
+done
+echo '66'
+for i in $*; do 
+  echo $i 
+done
+echo '77'
+while (( "$#" )); do 
+  echo $1 
+  shift 
+done
+echo '88'
+
 if [ ! -d "$path" ]; then
   printf "$path does not exist\n"
   exit 1
