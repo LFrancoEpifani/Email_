@@ -19,8 +19,8 @@ pipelines:
             SSH_KEY: $SSH_KEY_SNARCHIO
             SERVER: $SERVER_SNARCHIO
             EXTRA_ARGS: ["-P", "123"]
-            REMOTE_PATH: '/home/atlassianci'
-            LOCAL_PATH: 'src/*'
+            REMOTE_PATH: '/var/www/mail-dashboard-svelte/'
+            LOCAL_PATH: '${BITBUCKET_CLONE_DIR}/*'
             DEBUG: 'true'
     - step:
         name: Default Step manual
