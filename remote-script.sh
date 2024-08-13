@@ -1,14 +1,14 @@
 #!/bin/bash
 Help()
 {  # Display Help
-   echo "Syntax: scriptTemplate [-p|h]"
-   echo "options:"
-   echo "p  install Path"
-   echo "h  print this Help"
+   echo 'Syntax: scriptTemplate [-p|h]'
+   echo 'options:'
+   echo 'p  install Path'
+   echo 'h  print this Help'
    echo
 }
 
-while getopts ":p:h" option; do
+while getopts ':p:h' option; do
   case $option in
     h) # display Help
 	    Help
@@ -16,13 +16,13 @@ while getopts ":p:h" option; do
     p) # Enter a name
         path=$OPTARG;;		 
     \?) # Invalid option
-	    echo "Error: Invalid option"
+	    echo 'Error: Invalid option'
         exit;;
   esac
 done
 
-if [ ! -d "$path" ]; then
-  echo "$path does not exist"
+if [ ! -d '$path' ]; then
+  echo '$path does not exist'
   exit 1
 fi
 
