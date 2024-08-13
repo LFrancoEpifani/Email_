@@ -1,8 +1,5 @@
 #  Template NodeJS build
 
-#  This template allows you to validate your NodeJS code.
-#  The workflow allows running tests and code linting on the default branch.
-
 image: node:20
 
 pipelines:
@@ -13,6 +10,18 @@ pipelines:
           - echo "Branch $BITBUCKET_BRANCH"
           - echo "TAG $BITBUCKET_TAG"
           - echo "User triggering $BITBUCKET_STEP_TRIGGERER_UUID"
+    - step:
+        name: Deploy artifacts using SCP to PROD        
+        script:
+        - pipe: atlassian/scp-deploy:1.5.1
+          variables:
+            USER: $USER_SNARCHIO
+            SSH_KEY: $SSH_KEY_SNARCHIO
+            SERVER: $SERVER_SNARCHIO
+            EXTRA_ARGS: ["-P", "123"]
+            REMOTE_PATH: '/home/atlassianci'
+            LOCAL_PATH: 'src/*'
+            DEBUG: 'true'
     - step:
         name: Default Step manual
         trigger: manual
