@@ -30,11 +30,11 @@
 
 cd /var/www/mail-dashboard-svelte
 
-printf '\nInstall node depelndencies'
-npm install
+# printf '\nInstall node depelndencies'
+# npm install
 
-printf '\nInstall python depelndencies'
-pip install -r requirements.txt
+# printf '\nInstall python depelndencies'
+# pip install -r requirements.txt
 
 printf '\nRestart instance on pm2'
 pm2 restart mail-dashboard
