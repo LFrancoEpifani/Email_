@@ -6,10 +6,10 @@ pipelines:
   default:
     # - step:
     #     script:
-    #       - echo 'Commit $BITBUCKET_COMMIT'
-    #       - echo 'Branch $BITBUCKET_BRANCH'
-    #       - echo 'TAG $BITBUCKET_TAG'
-    #       - echo 'User triggering $BITBUCKET_STEP_TRIGGERER_UUID'
+    #       - echo "Commit $BITBUCKET_COMMIT"
+    #       - echo "Branch $BITBUCKET_BRANCH"
+    #       - echo "TAG $BITBUCKET_TAG"
+    #       - echo "User triggering $BITBUCKET_STEP_TRIGGERER_UUID"
     - step:
         name: Run commands on server
         script:
@@ -19,11 +19,11 @@ pipelines:
               SSH_KEY: $SSH_KEY_SNARCHIO
               SERVER: $SERVER_SNARCHIO
               PORT: 123
-              MODE: 'script'
-              COMMAND: 'remote-script.sh'
+              MODE: "script"
+              COMMAND: "remote-script.sh"
               EXTRA_ARGS:
-                - '-p $INSTALL_PATH'
-              DEBUG: 'true'
+                - "-p $INSTALL_PATH"
+              DEBUG: "true"
     - step:
         name: Deploy artifacts using SCP to PROD
         trigger: manual
@@ -33,10 +33,10 @@ pipelines:
               USER: $USER_SNARCHIO
               SSH_KEY: $SSH_KEY_SNARCHIO
               SERVER: $SERVER_SNARCHIO
-              EXTRA_ARGS: ['-P', '123']
+              EXTRA_ARGS: ["-P", "123"]
               REMOTE_PATH: $INSTALL_PATH
-              LOCAL_PATH: '${BITBUCKET_CLONE_DIR}/*'
-              DEBUG: 'true'
+              LOCAL_PATH: "${BITBUCKET_CLONE_DIR}/*"
+              DEBUG: "true"
     - step:
         name: Default Step manual
         trigger: manual
@@ -49,10 +49,10 @@ pipelines:
     snarchio:
       - step:
           script:
-            - echo 'Commit $BITBUCKET_COMMIT'
-            - echo 'Branch $BITBUCKET_BRANCH'
-            - echo 'TAG $BITBUCKET_TAG'
-            - echo 'User triggering $BITBUCKET_STEP_TRIGGERER_UUID'
+            - echo "Commit $BITBUCKET_COMMIT"
+            - echo "Branch $BITBUCKET_BRANCH"
+            - echo "TAG $BITBUCKET_TAG"
+            - echo "User triggering $BITBUCKET_STEP_TRIGGERER_UUID"
       - step:
           name: Branches Snarchio Step manual
           trigger: manual
