@@ -53,7 +53,6 @@ def analyze_email_comments(email):
     return tags if updated else None
 
 def update_email_tags(connection, email_id, tags):
-    """Actualiza las etiquetas manuales de un correo electrónico en la base de datos."""
     try:
         cursor = connection.cursor()
         cursor.execute(

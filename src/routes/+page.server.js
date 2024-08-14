@@ -17,7 +17,6 @@ export async function load() {
     };
   } catch (error) {
     console.error("Got an error!!!");
-    console.log(error);
     return {
       status: 500,
       error: new Error("Failed to load emails")
