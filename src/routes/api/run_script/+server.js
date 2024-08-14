@@ -48,10 +48,9 @@ function executeScript(scriptPath) {
   return new Promise((resolve, reject) => {
     exec(`python ${scriptPath}`, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Error executing script: ${error.message}`);
         reject(`Error executing script: ${error.message}`);
       } else if (stderr) {
-        console.error(`Script stderr: ${stderr}`);
+    
         reject(`Script error: ${stderr}`);
       } else {
         resolve('Script executed successfully');

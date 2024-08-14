@@ -10,12 +10,11 @@
   let tableElement;
   let notes = {};
 
+  let isDateAsc = false; // Estado para controlar el orden de la fecha
+
   async function fetchNotes(emailId) {
     try {
       const response = await fetch(`/api/notes?emailId=${emailId}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch notes for emailId ${emailId}`);
-      }
       const result = await response.json();
       notes = {
         ...notes,
@@ -23,10 +22,6 @@
       };
     } catch (error) {
       console.error(`Error fetching notes for emailId ${emailId}:`, error);
-      notes = {
-        ...notes,
-        [emailId]: []
-      };
     }
   }
 
@@ -65,7 +60,18 @@
   }
 
   function sortEmailsDate(emails) {
-    return [...emails].sort((a, b) => new Date(b.emlDate) - new Date(a.emlDate));
+    return emails.sort((a, b) => {
+      if (isDateAsc) {
+        return new Date(a.emlDate) - new Date(b.emlDate); // Ascendente
+      } else {
+        return new Date(b.emlDate) - new Date(a.emlDate); // Descendente
+      }
+    });
+  }
+
+  function toggleDateSort() {
+    isDateAsc = !isDateAsc;
+    sortedEmails = sortEmailsDate(data.data || []);
   }
 
   function formatDate(dateStr) {
@@ -109,20 +115,27 @@
           <th class="w-3/12 p-4 text-left">Subject</th>
           <th class="w-3/12 p-4 text-left">Text</th>
           <th class="w-2/12 p-4 text-left">Tags</th>
-          <th class="w-1/12 p-4 text-left">Date</th>
+          <th class="w-1/12 p-4 text-left">
+            <div class="flex items-center">
+              Date
+              <button on:click={toggleDateSort} class="ml-2 focus:outline-none">
+                <i class={`fa-solid ${isDateAsc ? 'fa-arrow-up' : 'fa-arrow-down'}`}></i>
+              </button>
+            </div>
+          </th>
           <th class="w-1/12 p-4 text-left">Notes</th>
           <th class="w-1/12 p-4 text-left"></th>
         </tr>
       </thead>
       <tbody class="text-gray-700 dark:text-white">
         {#each sortedEmails as email}
-          <tr class="border-b border-gray-200 hover:bg-gray-100 hover:dark:bg-gray-900">
+          <tr class="border-b border-gray-200 hover:bg-gray-100 hover:dark:bg-gray-700">
             <td class="px-4 py-2 text-lg font-bold">{email.emlFrom}</td>
             <td class="px-4 py-2 text-xl font-regular text-[#4b89f4]">{email.emlSubject}</td>
             <td class="px-4 py-2 text-lg">
               <ExpandableText text={email.automaticComments} maxLength={35} />
             </td>
-            <td class="px-4">
+            <td class="px-4 py-2">
               {#each email.manualTags.split(',') as tag}
                 <span class="tag {getTagStyles(tag)}">{tag}</span>
               {/each}
