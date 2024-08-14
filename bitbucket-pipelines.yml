@@ -4,24 +4,39 @@ image: node:20
 
 pipelines:
   default:
+    # - step:
+    #     script:
+    #       - echo "Commit $BITBUCKET_COMMIT"
+    #       - echo "Branch $BITBUCKET_BRANCH"
+    #       - echo "TAG $BITBUCKET_TAG"
+    #       - echo "User triggering $BITBUCKET_STEP_TRIGGERER_UUID"
     - step:
+        name: Run commands on server
         script:
-          - echo "Commit $BITBUCKET_COMMIT"
-          - echo "Branch $BITBUCKET_BRANCH"
-          - echo "TAG $BITBUCKET_TAG"
-          - echo "User triggering $BITBUCKET_STEP_TRIGGERER_UUID"
+          - pipe: atlassian/ssh-run:0.8.1
+            variables:
+              SSH_USER: $USER_SNARCHIO
+              SSH_KEY: $SSH_KEY_SNARCHIO
+              SERVER: $SERVER_SNARCHIO
+              PORT: 123
+              MODE: "script"
+              COMMAND: "remote-script.sh"
+              EXTRA_ARGS:
+                - "-o d=$INSTALL_PATH"
+              DEBUG: "true"
     - step:
-        name: Deploy artifacts using SCP to PROD        
+        name: Deploy artifacts using SCP to PROD
+        trigger: manual
         script:
-        - pipe: atlassian/scp-deploy:1.5.1
-          variables:
-            USER: $USER_SNARCHIO
-            SSH_KEY: $SSH_KEY_SNARCHIO
-            SERVER: $SERVER_SNARCHIO
-            EXTRA_ARGS: ["-P", "123"]
-            REMOTE_PATH: '/home/atlassianci'
-            LOCAL_PATH: 'src/*'
-            DEBUG: 'true'
+          - pipe: atlassian/scp-deploy:1.5.1
+            variables:
+              USER: $USER_SNARCHIO
+              SSH_KEY: $SSH_KEY_SNARCHIO
+              SERVER: $SERVER_SNARCHIO
+              EXTRA_ARGS: ["-P", "123"]
+              REMOTE_PATH: $INSTALL_PATH
+              LOCAL_PATH: "${BITBUCKET_CLONE_DIR}/*"
+              DEBUG: "true"
     - step:
         name: Default Step manual
         trigger: manual
@@ -45,9 +60,9 @@ pipelines:
             - node
           script:
             - npm install
-            - npm run build          
+            - npm run build
   custom:
-    manual:      
+    manual:
       - step:
           name: Common Manual Step
           caches:
