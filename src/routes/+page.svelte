@@ -64,7 +64,7 @@
 
 <main class="contenedor bg-white dark:bg-gradient-to-b from-[#083153] to-[#082038] text-black dark:text-white">
   <Header />
-  <section class="inbox-container flex-grow overflow-hidden p-3">
+  <section class="inbox-container flex-grow overflow-hidden">
     {#if errorMessage}
       <p class="error-message">{errorMessage}</p>
     {/if}

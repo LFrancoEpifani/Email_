@@ -74,6 +74,10 @@ ul {
     color: #1a202c; 
 }
 
+::placeholder{
+    color: white;
+}
+
 
 .text-ellipsis {
     white-space: nowrap;
@@ -92,6 +96,17 @@ ul {
     width: 100%;
     border-collapse: collapse;
 }
+
+
+
+input[type='checkbox'] {
+    width: 17px;
+    height: 17px;
+    background:white;
+    border-radius: 5px;
+    border:2px solid #555;
+}
+
 
 .table th, .table td {
     padding: 0.75rem;

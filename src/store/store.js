@@ -1,6 +1,5 @@
 import { writable } from "svelte/store";
 
-
 function isLocalStorageAvailable() {
   try {
     const testKey = '__storage_test__';
@@ -13,7 +12,9 @@ function isLocalStorageAvailable() {
 }
 
 
-export const selectedEmails = writable(isLocalStorageAvailable() ? JSON.parse(localStorage.getItem("selectedEmails")) || [] : []);
+export const selectedEmails = writable(
+  isLocalStorageAvailable() ? JSON.parse(localStorage.getItem("selectedEmails")) || [] : []
+);
 
 selectedEmails.subscribe(value => {
   if (isLocalStorageAvailable()) {
@@ -21,8 +22,19 @@ selectedEmails.subscribe(value => {
   }
 });
 
+export const selectedCheckboxes = writable(
+  isLocalStorageAvailable() ? JSON.parse(localStorage.getItem("selectedCheckboxes")) || [] : []
+);
 
-export const theme = writable(isLocalStorageAvailable() ? localStorage.getItem('theme') || 'light' : 'light');
+selectedCheckboxes.subscribe(value => {
+  if (isLocalStorageAvailable()) {
+    localStorage.setItem("selectedCheckboxes", JSON.stringify(value));
+  }
+});
+
+export const theme = writable(
+  isLocalStorageAvailable() ? localStorage.getItem('theme') || 'light' : 'light'
+);
 
 theme.subscribe(value => {
   if (isLocalStorageAvailable()) {
