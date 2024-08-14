@@ -19,7 +19,7 @@ pipelines:
               SSH_KEY: $SSH_KEY_SNARCHIO
               SERVER: $SERVER_SNARCHIO
               PORT: 123
-              # MODE: "script"
+              MODE: "script"
               # COMMAND: "remote-script.sh"
               # EXTRA_ARGS:
               #   - "-o d=$INSTALL_PATH"
