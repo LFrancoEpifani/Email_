@@ -1,58 +1,19 @@
 #!/bin/bash
-Help()
-{  # Display Help
-   echo "Syntax: $(basename "$0") [-p|h]"
-   echo "options:"
-   echo "p  install Path"
-   echo "h  print this Help"
-   echo
-}
-
-while getopts ":p:h" option; do
-  case $option in
-    h) # display Help
-	    Help
-        exit;;
-    p) # Enter a name
-        path=$OPTARG;;		 
-    \?) # Invalid option
-	    echo "Error: Invalid option"
-        exit;;
-  esac
-done
-
-echo '11'
-printf "all params $@"
-echo '22'
-echo $@
-echo '33'
-printf "parameter is $path"
-echo '44'
-echo $path
-echo '55'
-
-for i; do 
-   echo $i 
-done
-echo '66'
-for i in $*; do 
-  echo $i 
-done
-echo '77'
-while (( "$#" )); do 
-  echo $1 
-  shift 
-done
-echo '88'
-
-if [ ! -d "$path" ]; then
-  printf "$path does not exist\n"
-  exit 1
+if [[ -z "${INSTALL_PATH}" ]]; then
+  echo "Missing INSTALL_PATH environment variable"
+  # exit 1
 fi
+echo $INSTALL_PATH
 
-# cd $path
+if [[ -z "${INSTALL_PATH2}" ]]; then
+  echo "Missing INSTALL_PATH2 environment variable"
+  # exit 1
+fi
+echo $INSTALL_PATH2
 
-cd /var/www/mail-dashboard-svelte
+# cd $INSTALL_PATH
+
+# cd /var/www/mail-dashboard-svelte
 
 # printf "Install node depelndencies\n"
 # npm install
