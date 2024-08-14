@@ -20,9 +20,9 @@ pipelines:
               SERVER: $SERVER_SNARCHIO
               PORT: 123
               MODE: "script"
-              COMMAND: "remote-script.sh"
-              EXTRA_ARGS:
-                - "-o d=$INSTALL_PATH"
+              COMMAND: remote-script.sh
+              ENV_VARS: >-
+                INSTALL_PATH=${INSTALL_PATH}
               DEBUG: "true"
     - step:
         name: Deploy artifacts using SCP to PROD
