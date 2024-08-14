@@ -1,24 +1,16 @@
 #!/bin/bash
 if [[ -z "${INSTALL_PATH}" ]]; then
   echo "Missing INSTALL_PATH environment variable"
-  # exit 1
+  exit 1
 fi
-echo $INSTALL_PATH
 
-if [[ -z "${INSTALL_PATH2}" ]]; then
-  echo "Missing INSTALL_PATH2 environment variable"
-  # exit 1
-fi
-echo $INSTALL_PATH2
+echo "Change current path to $INSTALL_PATH"
+cd $INSTALL_PATH
 
-# cd $INSTALL_PATH
-
-# cd /var/www/mail-dashboard-svelte
-
-# printf "Install node depelndencies\n"
+# printf "Install node dependencies\n"
 # npm install
 
-# printf "Install python depelndencies\n"
+# printf "Install python dependencies\n"
 # pip install -r requirements.txt
 
 # printf "Restart instance on pm2\n"
