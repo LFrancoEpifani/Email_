@@ -22,7 +22,6 @@ def create_db_connection():
         return None
 
 def fetch_emails(connection):
-    """Obtiene los correos electrónicos desde la base de datos y retorna una lista de diccionarios."""
     try:
         cursor = connection.cursor(dictionary=True)
         cursor.execute('SELECT * FROM email')
@@ -52,7 +51,6 @@ def main():
     connection = create_db_connection()
     if connection:
         emails = fetch_emails(connection)
-        print(emails) 
         connection.close()
 
 if __name__ == "__main__":

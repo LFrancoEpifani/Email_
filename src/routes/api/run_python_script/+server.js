@@ -45,7 +45,6 @@ function executeScript(scriptPath) {
         console.error(`Script stderr: ${stderr}`);
         reject(`Script error: ${stderr}`);
       } else {
-        console.log(`Script stdout: ${stdout}`);
         resolve('Script executed successfully');
       }
     });
