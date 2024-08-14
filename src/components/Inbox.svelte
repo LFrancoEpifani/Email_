@@ -2,7 +2,7 @@
   import { format, isToday, isThisWeek, isYesterday } from 'date-fns';
   import ExpandableText from './ExpandableText.svelte';
   import { onMount } from 'svelte';
-  import { selectedEmails } from '../store/store.js';
+  import { selectedEmails, selectedCheckboxes } from '../store/store.js';
   
   export let handleAnalyzeEmails;
   let errorMessage = '';
@@ -85,8 +85,8 @@
   function getTagStyles(tag) {
     const styles = {
       TechRequest: 'bg-[#E6E4FB] text-[#463C86] border-[#A79CF1]',
-      Certificate: 'bg-[#FBF6D8] text-[#C2A520] border-[#EBD968]',
-      Forwarded: 'bg-[#a4e5c6] text-[#2B8E28] border-[#DCF7E9]',
+      Certificate: 'bg-[#FBF6D8] text-[#8b7514] border-[#EBD968]',
+      Forwarded: 'bg-[#baf1d6] text-[#2B8E28] border-[#DCF7E9]',
       Registration: 'bg-[#FFDDCC] text-[#D47528] border-[#F3B180]'
     };
     return styles[tag] || 'bg-gray-300 text-black border-gray-500'; 
@@ -94,10 +94,23 @@
 
   let sortedEmails = data && data.data ? sortEmailsDate(data.data) : []; 
 
-  function toggleEmailSelection(id) {
+  function toggleFlagSelection(id) {
+    
     selectedEmails.update(selected => selected.includes(id) ? selected.filter(emailId => emailId !== id) : [...selected, id]);
   }
 
+  function toggleCheckboxSelection(id) {
+  
+    selectedCheckboxes.update(selected => selected.includes(id) ? selected.filter(emailId => emailId !== id) : [...selected, id]);
+  }
+
+  function toggleAllCheckboxSelections(event) {
+  
+    const isChecked = event.target.checked;
+    selectedCheckboxes.update(() => isChecked ? sortedEmails.map(email => email.id) : []);
+  }
+
+  $: selectedCheckboxIds = $selectedCheckboxes;
   $: selectedEmailIds = $selectedEmails;
 
   onMount(() => {
@@ -107,31 +120,37 @@
 </script>
 
 <main class="h-full w-full overflow-hidden">
-  <div class="overflow-y-auto h-full w-full ">
+  <div class="overflow-y-auto h-full w-full border border-gray-200 p-2 rounded-lg">
     <table class="bg-white dark:bg-gradient-to-b from-[#083153] to-[#082038] w-full hidden rounded-lg" bind:this={tableElement}>
       <thead class="text-black dark:text-white border-b w-auto">
-        <tr class="text-xl">
-          <th class="w-2/12 p-4 text-left">From</th>
-          <th class="w-3/12 p-4 text-left">Subject</th>
-          <th class="w-3/12 p-4 text-left">Text</th>
-          <th class="w-2/12 p-4 text-left">Tags</th>
-          <th class="w-1/12 p-4 text-left">
+        <tr class="text-2xl">
+          <th class="p-3">
+            <input type="checkbox" on:change={toggleAllCheckboxSelections}>
+          </th>
+          <th class="w-2/12 p-5 text-left">From</th>
+          <th class="w-3/12 p-5 text-left">Subject</th>
+          <th class="w-3/12 p-5 text-left">Text</th>
+          <th class="w-1/12 p-5 text-left">Tags</th>
+          <th class="w-1/12 p-5 text-left">
             <div class="flex items-center">
               Date
               <button on:click={toggleDateSort} class="ml-2 focus:outline-none">
-                <i class={`fa-solid ${isDateAsc ? 'fa-arrow-up' : 'fa-arrow-down'}`}></i>
+                <i class={`fa-solid text-xl text-gray-400 ${isDateAsc ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
               </button>
             </div>
           </th>
-          <th class="w-1/12 p-4 text-left">Notes</th>
-          <th class="w-1/12 p-4 text-left"></th>
+          <th class="w-2/12 p-5 text-left">Notes</th>
+          <th class="w-1/12 p-5 text-left"></th>
         </tr>
       </thead>
       <tbody class="text-gray-700 dark:text-white">
         {#each sortedEmails as email}
           <tr class="border-b border-gray-200 hover:bg-gray-100 hover:dark:bg-gray-700">
-            <td class="px-4 py-2 text-lg font-bold">{email.emlFrom}</td>
-            <td class="px-4 py-2 text-xl font-regular text-[#4b89f4]">{email.emlSubject}</td>
+            <td class="p-3">
+              <input class="my-4" type="checkbox" checked={selectedCheckboxIds.includes(email.id)} on:change={() => toggleCheckboxSelection(email.id)}>
+            </td>
+            <td class="px-4 py-2 text-[18px] font-bold">{email.emlFrom}</td>
+            <td class="px-4 py-2 text-xl font-regular text-[#4a8cd3]">{email.emlSubject}</td>
             <td class="px-4 py-2 text-lg">
               <ExpandableText text={email.automaticComments} maxLength={35} />
             </td>
@@ -143,15 +162,15 @@
             <td class="px-4 py-2 text-lg">{formatDate(email.emlDate)}</td>
             <td class="px-4 py-2">
               <input 
-                class="p-2 mx-3 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
+                class="text-lg w-full p-2 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
                 type="text" 
                 on:keydown={(e) => { if (e.key === 'Enter' && e.target.value.trim() !== '') { addNoteToEmail(email.id, e.target.value.trim()); e.target.value=''; } }}
               />
               <ul>
                 {#if notes[email.id]}
                   {#each notes[email.id] as note (note.id)}
-                    <li class="flex m-3 gap-3">
-                      <p>{note.note}</p>
+                    <li class="flex m-3 gap-3 items-start">
+                      <ExpandableText text={note.note} maxLength={35} />
                       <button on:click={() => deleteNoteFromEmail(email.id, note.id)}>
                         <i class="fa-solid fa-trash cursor-pointer"></i>
                       </button>
@@ -162,7 +181,7 @@
             </td>
             <td class="px-4 py-2">
               <div class="flex gap-2 text-xl items-center">
-                <button class:btn-red={selectedEmailIds.includes(email.id)} on:click={() => toggleEmailSelection(email.id)}>
+                <button class:btn-red={selectedEmailIds.includes(email.id)} on:click={() => toggleFlagSelection(email.id)}>
                   <i class="fa-solid fa-flag cursor-pointer"></i>
                 </button>
                 <button on:click="{handleAnalyzeEmails}" class="">
@@ -181,6 +200,7 @@
 </main>
 
 <style>
+
   .inbox {
     padding: 1rem;
   }
