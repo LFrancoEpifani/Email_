@@ -7,6 +7,9 @@ pipelines:
     - step:
         name: Build
         # trigger: manual
+        runs-on:
+          - self.hosted
+          - linux.shell
         caches:
           - node
         script:
@@ -19,6 +22,9 @@ pipelines:
           - step:
               name: Deploy main folder
               # trigger: manual
+              runs-on:
+                - self.hosted
+                - linux.shell
               script:
                 - pipe: atlassian/scp-deploy:1.5.1
                   variables:
@@ -32,6 +38,9 @@ pipelines:
           - step:
               name: Deploy build folder
               # trigger: manual
+              runs-on:
+                - self.hosted
+                - linux.shell
               script:
                 - pipe: atlassian/scp-deploy:1.5.1
                   variables:
@@ -45,6 +54,9 @@ pipelines:
     - step:
         name: Run commands on server
         # trigger: manual
+        runs-on:
+          - self.hosted
+          - linux.shell
         script:
           - pipe: atlassian/ssh-run:0.8.1
             variables:
