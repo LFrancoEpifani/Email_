@@ -13,6 +13,5 @@ npm install
 printf "Install python dependencies\n"
 pip install -r requirements.txt
 
-printf "Restart instance on pm2\n"
-echo "pm2 restart mail-dashboard"
-pm2 restart mail-dashboard
+# printf "Restart instance on pm2\n"
+# pm2 restart mail-dashboard
