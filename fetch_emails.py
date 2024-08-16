@@ -13,7 +13,7 @@ def create_db_connection():
             host=os.getenv('DB_HOST'),
             user=os.getenv('DB_USER'),
             password=os.getenv('DB_PASS'),
-            database=os.getenv('DB_NAME')
+            database=os.getenv('DB_NAME'),
         )
         if connection.is_connected():
             return connection
@@ -41,7 +41,6 @@ def fetch_emails(connection):
             cursor.close()
 
 def format_email_dates(email):
-    """Convierte los campos de fecha y hora al formato ISO."""
     for key, value in email.items():
         if isinstance(value, datetime):
             email[key] = value.isoformat()
