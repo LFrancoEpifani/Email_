@@ -11,6 +11,10 @@ function isLocalStorageAvailable() {
   }
 }
 
+export const emails = writable([]);  
+export const selectedTag = writable(''); 
+export const searchQuery = writable('');
+
 
 export const selectedEmails = writable(
   isLocalStorageAvailable() ? JSON.parse(localStorage.getItem("selectedEmails")) || [] : []
@@ -42,3 +46,4 @@ theme.subscribe(value => {
     document.documentElement.classList.toggle('dark', value === 'dark');
   }
 });
+

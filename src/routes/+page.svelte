@@ -62,7 +62,7 @@
   }
 </script>
 
-<main class="contenedor bg-white dark:bg-gradient-to-b from-[#083153] to-[#082038] text-black dark:text-white">
+<main class="contenedor bg-white dark:bg-[#2e2e2e] text-black dark:text-white">
   <Header />
   <section class="inbox-container flex-grow overflow-hidden">
     {#if errorMessage}

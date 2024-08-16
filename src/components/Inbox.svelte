@@ -2,15 +2,24 @@
   import { format, isToday, isThisWeek, isYesterday } from 'date-fns';
   import ExpandableText from './ExpandableText.svelte';
   import { onMount } from 'svelte';
-  import { selectedEmails, selectedCheckboxes } from '../store/store.js';
-  
-  export let handleAnalyzeEmails;
-  let errorMessage = '';
-  export let data = { data: [] }; 
-  let tableElement;
-  let notes = {};
+  import { emails, selectedEmails, selectedCheckboxes, selectedTag, searchQuery } from '../store/store.js';
 
-  let isDateAsc = false; // Estado para controlar el orden de la fecha
+  export let handleAnalyzeEmails = [];
+  let errorMessage = '';
+  let tableElement;
+  export let data = { data: [] }; 
+  let notes = {};
+  let isDateAsc = false;
+
+
+  $: filteredEmails = data.data.filter(email => {
+    const matchesTag = $selectedTag ? email.manualTags.includes($selectedTag) : true;
+    const matchesQuery = $searchQuery ? email.emlSubject.toLowerCase().includes($searchQuery.toLowerCase()) : true;
+    return matchesTag && matchesQuery;
+  });
+
+  // Ordenar los emails filtrados por fecha
+  $: sortedEmails = sortEmailsDate(filteredEmails);
 
   async function fetchNotes(emailId) {
     try {
@@ -62,16 +71,16 @@
   function sortEmailsDate(emails) {
     return emails.sort((a, b) => {
       if (isDateAsc) {
-        return new Date(a.emlDate) - new Date(b.emlDate); // Ascendente
+        return new Date(a.emlDate) - new Date(b.emlDate); 
       } else {
-        return new Date(b.emlDate) - new Date(a.emlDate); // Descendente
+        return new Date(b.emlDate) - new Date(a.emlDate); 
       }
     });
   }
 
   function toggleDateSort() {
     isDateAsc = !isDateAsc;
-    sortedEmails = sortEmailsDate(data.data || []);
+    sortedEmails = sortEmailsDate(filteredEmails);
   }
 
   function formatDate(dateStr) {
@@ -92,20 +101,19 @@
     return styles[tag] || 'bg-gray-300 text-black border-gray-500'; 
   }
 
-  let sortedEmails = data && data.data ? sortEmailsDate(data.data) : []; 
-
   function toggleFlagSelection(id) {
-    
-    selectedEmails.update(selected => selected.includes(id) ? selected.filter(emailId => emailId !== id) : [...selected, id]);
+    selectedEmails.update(selected => 
+      selected.includes(id) ? selected.filter(emailId => emailId !== id) : [...selected, id]
+    );
   }
 
   function toggleCheckboxSelection(id) {
-  
-    selectedCheckboxes.update(selected => selected.includes(id) ? selected.filter(emailId => emailId !== id) : [...selected, id]);
+    selectedCheckboxes.update(selected => 
+      selected.includes(id) ? selected.filter(emailId => emailId !== id) : [...selected, id]
+    );
   }
 
   function toggleAllCheckboxSelections(event) {
-  
     const isChecked = event.target.checked;
     selectedCheckboxes.update(() => isChecked ? sortedEmails.map(email => email.id) : []);
   }
@@ -115,13 +123,13 @@
 
   onMount(() => {
     if (tableElement) tableElement.classList.remove('hidden');
-    sortedEmails.forEach(email => fetchNotes(email.id));
+    sortedEmails.forEach(email => fetchNotes(email.id)); 
   });
 </script>
 
 <main class="h-full w-full overflow-hidden">
-  <div class="overflow-y-auto h-full w-full border border-gray-200 p-2 rounded-lg">
-    <table class="bg-white dark:bg-gradient-to-b from-[#083153] to-[#082038] w-full hidden rounded-lg" bind:this={tableElement}>
+  <div class="overflow-y-auto h-full w-full p-2">
+    <table class="bg-white dark:bg-[#2e2e2e] w-full hidden rounded-lg" bind:this={tableElement}>
       <thead class="text-black dark:text-white border-b w-auto">
         <tr class="text-2xl">
           <th class="p-3">
@@ -130,7 +138,7 @@
           <th class="w-2/12 p-5 text-left">From</th>
           <th class="w-3/12 p-5 text-left">Subject</th>
           <th class="w-3/12 p-5 text-left">Text</th>
-          <th class="w-1/12 p-5 text-left">Tags</th>
+          <th class="w-2/12 p-5 text-left">Tags</th>
           <th class="w-1/12 p-5 text-left">
             <div class="flex items-center">
               Date
@@ -144,85 +152,68 @@
         </tr>
       </thead>
       <tbody class="text-gray-700 dark:text-white">
-        {#each sortedEmails as email}
-          <tr class="border-b border-gray-200 hover:bg-gray-100 hover:dark:bg-gray-700">
-            <td class="p-3">
-              <input class="my-4" type="checkbox" checked={selectedCheckboxIds.includes(email.id)} on:change={() => toggleCheckboxSelection(email.id)}>
-            </td>
-            <td class="px-4 py-2 text-[18px] font-bold">{email.emlFrom}</td>
-            <td class="px-4 py-2 text-xl font-regular text-[#4a8cd3]">{email.emlSubject}</td>
-            <td class="px-4 py-2 text-lg">
-              <ExpandableText text={email.automaticComments} maxLength={35} />
-            </td>
-            <td class="px-4 py-2">
-              {#each email.manualTags.split(',') as tag}
-                <span class="tag {getTagStyles(tag)}">{tag}</span>
-              {/each}
-            </td>
-            <td class="px-4 py-2 text-lg">{formatDate(email.emlDate)}</td>
-            <td class="px-4 py-2">
-              <input 
-                class="text-lg w-full p-2 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
-                type="text" 
-                on:keydown={(e) => { if (e.key === 'Enter' && e.target.value.trim() !== '') { addNoteToEmail(email.id, e.target.value.trim()); e.target.value=''; } }}
-              />
-              <ul>
-                {#if notes[email.id]}
-                  {#each notes[email.id] as note (note.id)}
-                    <li class="flex m-3 gap-3 items-start">
-                      <ExpandableText text={note.note} maxLength={35} />
-                      <button on:click={() => deleteNoteFromEmail(email.id, note.id)}>
-                        <i class="fa-solid fa-trash cursor-pointer"></i>
-                      </button>
-                    </li>
-                  {/each}
-                {/if}
-              </ul>
-            </td>
-            <td class="px-4 py-2">
-              <div class="flex gap-2 text-xl items-center">
-                <button class:btn-red={selectedEmailIds.includes(email.id)} on:click={() => toggleFlagSelection(email.id)}>
-                  <i class="fa-solid fa-flag cursor-pointer"></i>
-                </button>
-                <button on:click="{handleAnalyzeEmails}" class="">
-                  <i class="fa-solid fa-refresh"></i>
-                </button>
-                {#if errorMessage}
-                  <p class="error-message">{errorMessage}</p>
-                {/if}
-              </div>
-            </td>
+        {#if sortedEmails.length > 0}
+          {#each sortedEmails as email}
+            <tr class="border-b border-gray-200 hover:bg-gray-100 hover:dark:bg-gray-700">
+              <td class="p-3">
+                <input class="my-4" type="checkbox" checked={selectedCheckboxIds.includes(email.id)} on:change={() => toggleCheckboxSelection(email.id)}>
+              </td>
+              <td class="px-4 py-2 text-[18px] font-bold">{email.emlFrom}</td>
+              <td class="px-4 py-2 text-xl font-regular text-[#4a8cd3]">{email.emlSubject}</td>
+              <td class="px-4 py-2 text-lg">
+                <ExpandableText text={email.automaticComments} maxLength={35} />
+              </td>
+              <td class="px-4 py-2">
+                {#each email.manualTags.split(',') as tag}
+                  <span class="tag {getTagStyles(tag)}">{tag}</span>
+                {/each}
+              </td>
+              <td class="px-4 py-2 text-lg">{formatDate(email.emlDate)}</td>
+              <td class="px-4 py-2">
+                <input 
+                  class="text-lg w-full p-2 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
+                  type="text" 
+                  on:keydown={(e) => { if (e.key === 'Enter' && e.target.value.trim() !== '') { addNoteToEmail(email.id, e.target.value.trim()); e.target.value=''; } }}
+                />
+                <ul>
+                  {#if notes[email.id]}
+                    {#each notes[email.id] as note (note.id)}
+                      <li class="flex m-3 gap-3 items-start">
+                        <ExpandableText text={note.note} maxLength={35} />
+                        <button on:click={() => deleteNoteFromEmail(email.id, note.id)}>
+                          <i class="fa-solid fa-trash cursor-pointer"></i>
+                        </button>
+                      </li>
+                    {/each}
+                  {/if}
+                </ul>
+              </td>
+              <td class="px-4 py-2">
+                <div class="flex gap-2 text-xl items-center">
+                  <button class:btn-red={selectedEmailIds.includes(email.id)} on:click={() => toggleFlagSelection(email.id)}>
+                    <i class="fa-solid fa-flag cursor-pointer"></i>
+                  </button>
+                  <button on:click={handleAnalyzeEmails} class="">
+                    <i class="fa-solid fa-refresh"></i>
+                  </button>
+                  {#if errorMessage}
+                    <p class="error-message">{errorMessage}</p>
+                  {/if}
+                </div>
+              </td>
+            </tr>
+          {/each}
+        {:else}
+          <tr>
+            <td colspan="8" class="text-center p-5">No emails found</td>
           </tr>
-        {/each}
+        {/if}
       </tbody>
     </table>
   </div>
 </main>
 
 <style>
-
-  .inbox {
-    padding: 1rem;
-  }
-
-  .inbox-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .email-list {
-    margin-top: 1rem;
-    list-style-type: none;
-    padding: 0;
-  }
-
-  .email-item {
-    margin-bottom: 1rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-
   .tag {
     display: inline-block;
     margin-right: 0.5rem;

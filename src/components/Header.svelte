@@ -1,22 +1,19 @@
 <script>
   import { theme } from '../store/store.js';
-  let showDropdown = false;
-
+  import { selectedTag, searchQuery } from '../store/store.js';
   function toggleTheme() {
     theme.update(current => current === 'light' ? 'dark' : 'light');
   }
 
-  function toggleDropdown() {
-    showDropdown = !showDropdown;
-  }
+
+  
 </script>
 
-<header class="bg-[#063132] dark:bg-[#083153]">
-  <div class="flex justify-between items-center p-4">
+<header class="bg-[#063132] dark:bg-[#063132]">
+  <div class="flex justify-between items-center">
     <a href="/" class="text-2xl font-bold text-white dark:text-white px-4 py-2 focus:outline-none">Email Manager</a>
-
-    <form class="w-[800px]">
-      <div class="flex">
+    <form class="flex items-center justify-center">
+      <div class="w-[800px] flex items-center justify-center m-4">
         <div class="relative w-full max-w-2xl mr-4">
           <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
             <i class="fa-solid fa-magnifying-glass text-gray-200"></i>
@@ -24,22 +21,23 @@
           <input 
             type="search" 
             id="default-search" 
-            class="w-full py-3 pl-12 text-lg text-white border border-gray-300 rounded-lg bg-transparent dark:text-white dark:border-gray-700 dark:bg-gray-800 focus:outline-none" 
+            class="w-full py-3 pl-12 text-lg text-white border border-gray-300 rounded-lg bg-transparent dark:text-white dark:border-gray-700 dark:bg-[#2e2e2e] focus:outline-none" 
             placeholder="Search..." 
-            required
+            bind:value={$searchQuery} 
             aria-label="Search through emails"
           />
         </div>
-        <div class="relative">
-          <button type="button" on:click={toggleDropdown} class="flex items-center justify-between gap-2 w-[150px] py-3 text-lg text-white border border-gray-300 rounded-lg px-4 bg-transparent dark:text-white dark:border-gray-700 dark:bg-gray-800 focus:outline-none">
-            <span>Filter</span>
-            <i class="fa-solid fa-angle-down"></i>
-          </button>
-          
+        <div class="flex justify-between items-center">
+          <select bind:value={$selectedTag} class="border p-3 rounded-lg bg-transparent text-white">
+            <option class="bg-[#063132] text-lg" value="">All</option>
+            <option class="bg-[#063132] text-lg" value="TechRequest">TechRequest</option>
+            <option class="bg-[#063132] text-lg" value="Certificate">Certificate</option>
+            <option class="bg-[#063132] text-lg" value="Registration">Registration</option>
+            <option class="bg-[#063132] text-lg" value="Forwarded">Forwarded</option>
+          </select>
         </div>
       </div>
     </form>
-
     <div class="flex gap-3 items-center">
       <button 
         on:click={toggleTheme} 
