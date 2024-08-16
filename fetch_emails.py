@@ -3,7 +3,7 @@ from mysql.connector import Error
 from datetime import datetime
 from dotenv import load_dotenv
 import os
-
+import subprocess
 
 load_dotenv()
 
@@ -27,7 +27,6 @@ def fetch_emails(connection):
         cursor.execute('SELECT * FROM email')
         emails = cursor.fetchall()
 
-    
         for email in emails:
             email = format_email_dates(email)
         return emails
@@ -46,6 +45,15 @@ def format_email_dates(email):
             email[key] = value.isoformat()
     return email
 
+def run_current_script():
+    python_exe = os.getenv('PYTHON_EXE')
+    script_path = __file__  
+
+    try:
+        subprocess.run(f"{python_exe} {script_path}", shell=True, check=True, text=True, encoding='utf-8')
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing script: {e}")
+
 def main():
     connection = create_db_connection()
     if connection:
@@ -54,3 +62,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
