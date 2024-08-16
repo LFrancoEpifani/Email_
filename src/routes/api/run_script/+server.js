@@ -1,19 +1,12 @@
 import { exec } from 'child_process';
 import { resolve } from 'path';
+import dotenv from 'dotenv';
 
-export async function POST({ request }) {
+dotenv.config(); 
+
+export async function POST() {
   try {
-    const { scriptName } = await request.json();
-    const scriptPath = validateAndResolveScriptPath(scriptName);
-
-    if (!scriptPath) {
-      return new Response(JSON.stringify({ message: 'Invalid script name' }), {
-        status: 400,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    }
+    const scriptPath = validateAndResolveScriptPath('analyze_emails.py');
 
     const executionResult = await executeScript(scriptPath);
 
@@ -37,20 +30,20 @@ export async function POST({ request }) {
 
 
 function validateAndResolveScriptPath(scriptName) {
-  const allowedScripts = ['analyze_emails.py', 'fetch_emails.py'];
+  const allowedScripts = ['analyze_emails.py'];
   if (allowedScripts.includes(scriptName)) {
     return resolve(scriptName);
   }
-  return null;
+  throw new Error('Invalid script name');
 }
 
 function executeScript(scriptPath) {
   return new Promise((resolve, reject) => {
-    exec(`python ${scriptPath}`, (error, stdout, stderr) => {
+    const pythonExe = process.env.PYTHON_EXE || 'python'; 
+    exec(`${pythonExe} ${scriptPath}`, (error, stdout, stderr) => {
       if (error) {
         reject(`Error executing script: ${error.message}`);
       } else if (stderr) {
-    
         reject(`Script error: ${stderr}`);
       } else {
         resolve('Script executed successfully');

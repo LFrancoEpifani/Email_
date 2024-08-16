@@ -2,7 +2,6 @@ import mysql.connector
 from mysql.connector import Error
 from dotenv import load_dotenv
 import os
-import subprocess
 
 load_dotenv()
 
@@ -25,11 +24,9 @@ def fetch_emails(connection):
         cursor = connection.cursor(dictionary=True)
         cursor.execute('SELECT * FROM email')
         return cursor.fetchall()
-
     except Error as e:
         print(f"Error fetching emails: {e}")
         return []
-
     finally:
         if cursor:
             cursor.close()
@@ -67,25 +64,6 @@ def update_email_tags(connection, email_id, tags):
         if cursor:
             cursor.close()
 
-def run_current_script():
-    python_exe = os.getenv('PYTHON_EXE')
-    script_path = __file__  
-
-
-    if os.getenv('RUNNING_SCRIPT') == '1':
-        print("Script already running, avoiding recursion.")
-        return
-
-    print(f"Ejecutable de Python: {python_exe}")
-    print(f"Ejecutando el script: {script_path}")
-
-    try:
-       
-        os.environ['RUNNING_SCRIPT'] = '1'
-        subprocess.run(f"{python_exe} {script_path}", shell=True, check=True, text=True, encoding='utf-8')
-    except subprocess.CalledProcessError as e:
-        print(f"Error executing script: {e}")
-
 def analyze_emails():
     connection = create_db_connection()
     if connection:
@@ -98,4 +76,3 @@ def analyze_emails():
 
 if __name__ == "__main__":
     analyze_emails()
-   
