@@ -21,7 +21,7 @@
           <input 
             type="search" 
             id="default-search" 
-            class="w-full py-3 pl-12 text-lg text-white border border-gray-300 rounded-lg bg-transparent dark:text-white dark:border-gray-700 dark:bg-[#2e2e2e] focus:outline-none" 
+            class="w-full py-3 pl-12 text-lg text-white border border-gray-300 rounded-lg bg-transparent dark:text-white focus:outline-none" 
             placeholder="Search..." 
             bind:value={$searchQuery} 
             aria-label="Search through emails"

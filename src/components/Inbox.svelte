@@ -129,7 +129,7 @@
 
 <main class="h-full w-full overflow-hidden">
   <div class="overflow-y-auto h-full w-full p-2">
-    <table class="bg-white dark:bg-[#2e2e2e] w-full hidden rounded-lg" bind:this={tableElement}>
+    <table class="bg-white dark:bg-[#424242] w-full hidden rounded-lg" bind:this={tableElement}>
       <thead class="text-black dark:text-white border-b w-auto">
         <tr class="text-2xl">
           <th class="p-3">
