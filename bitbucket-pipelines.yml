@@ -25,6 +25,8 @@ pipelines:
               runs-on:
                 - self.hosted
                 - linux
+              caches:
+                - docker
               script:
                 - pipe: atlassian/scp-deploy:1.5.1
                   variables:
@@ -41,6 +43,8 @@ pipelines:
               runs-on:
                 - self.hosted
                 - linux
+              caches:
+                - docker
               script:
                 - pipe: atlassian/scp-deploy:1.5.1
                   variables:
@@ -57,6 +61,8 @@ pipelines:
         runs-on:
           - self.hosted
           - linux
+        caches:
+          - docker
         script:
           - pipe: atlassian/ssh-run:0.8.1
             variables:
