@@ -46,6 +46,7 @@ def main():
     connection = create_db_connection()
     if connection:
         emails = fetch_emails(connection)
+        print(emails)  
         connection.close()
 
 if __name__ == "__main__":

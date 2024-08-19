@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config(); 
 
-export async function POST() {
+export async function POST({ request }) {
   try {
     const scriptPath = validateAndResolveScriptPath('analyze_emails.py');
 
@@ -28,26 +28,29 @@ export async function POST() {
   }
 }
 
-
 function validateAndResolveScriptPath(scriptName) {
-  const allowedScripts = ['analyze_emails.py'];
+  const allowedScripts = ['analyze_emails.py', 'fetch_emails.py'];
   if (allowedScripts.includes(scriptName)) {
-    return resolve(scriptName);
+    const fullPath = resolve('./scripts', scriptName);
+    return fullPath;
   }
-  throw new Error('Invalid script name');
+  return null;
 }
 
 function executeScript(scriptPath) {
   return new Promise((resolve, reject) => {
-    const pythonExe = process.env.PYTHON_EXE || 'python'; 
+    const pythonExe = process.env.PYTHON_EXE || 'python3';
     exec(`${pythonExe} ${scriptPath}`, (error, stdout, stderr) => {
       if (error) {
+        console.error(`Execution error: ${error.message}`);
         reject(`Error executing script: ${error.message}`);
       } else if (stderr) {
+        console.error(`Script stderr: ${stderr}`);
         reject(`Script error: ${stderr}`);
       } else {
-        resolve('Script executed successfully');
+        resolve(stdout.trim());
       }
     });
   });
 }
+
