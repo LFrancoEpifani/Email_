@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config(); 
 
-export async function POST({ request }) {
+export async function POST() {
   try {
     const scriptPath = validateAndResolveScriptPath('analyze_emails.py');
 
@@ -18,7 +18,7 @@ export async function POST({ request }) {
     });
 
   } catch (error) {
-    console.error(`Error in script execution: ${error.message}`);
+    console.error('Error in script execution:', error); 
     return new Response(JSON.stringify({ message: 'An error occurred' }), {
       status: 500,
       headers: {
@@ -26,7 +26,6 @@ export async function POST({ request }) {
       }
     });
   }
-}
 
 function validateAndResolveScriptPath(scriptName) {
   const allowedScripts = ['analyze_emails.py', 'fetch_emails.py'];
@@ -53,4 +52,4 @@ function executeScript(scriptPath) {
     });
   });
 }
-
+}
