@@ -4,7 +4,7 @@
   import { onMount } from 'svelte';
   import { emails, selectedEmails, selectedCheckboxes, selectedTag, searchQuery } from '../store/store.js';
 
-  export let handleAnalyzeEmails = [];
+  export let handleAnalyzeEmail = [];
   let errorMessage = '';
   let tableElement;
   export let data = { data: [] }; 
@@ -18,7 +18,7 @@
     return matchesTag && matchesQuery;
   });
 
-  // Ordenar los emails filtrados por fecha
+
   $: sortedEmails = sortEmailsDate(filteredEmails);
 
   async function fetchNotes(emailId) {
@@ -193,7 +193,7 @@
                   <button class:btn-red={selectedEmailIds.includes(email.id)} on:click={() => toggleFlagSelection(email.id)}>
                     <i class="fa-solid fa-flag cursor-pointer"></i>
                   </button>
-                  <button on:click={handleAnalyzeEmails} class="">
+                  <button  on:click={() => { handleAnalyzeEmail(email.id)}} class="">
                     <i class="fa-solid fa-refresh"></i>
                   </button>
                   {#if errorMessage}

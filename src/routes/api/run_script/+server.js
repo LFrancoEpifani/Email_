@@ -4,11 +4,12 @@ import dotenv from 'dotenv';
 
 dotenv.config(); 
 
-export async function POST() {
+export async function POST({ request }) {  
   try {
+    const { emailId } = await request.json(); 
     const scriptPath = validateAndResolveScriptPath('analyze_emails.py');
 
-    const executionResult = await executeScript(scriptPath);
+    const executionResult = await executeScript(scriptPath, emailId);
 
     return new Response(JSON.stringify({ message: executionResult }), {
       status: 200,
@@ -26,6 +27,7 @@ export async function POST() {
       }
     });
   }
+}
 
 function validateAndResolveScriptPath(scriptName) {
   const allowedScripts = ['analyze_emails.py', 'fetch_emails.py'];
@@ -36,10 +38,10 @@ function validateAndResolveScriptPath(scriptName) {
   return null;
 }
 
-function executeScript(scriptPath) {
+function executeScript(scriptPath, emailId) {
   return new Promise((resolve, reject) => {
     const pythonExe = process.env.PYTHON_EXE || 'python3';
-    exec(`${pythonExe} ${scriptPath}`, (error, stdout, stderr) => {
+    exec(`${pythonExe} ${scriptPath} ${emailId}`, (error, stdout, stderr) => {
       if (error) {
         console.error(`Execution error: ${error.message}`);
         reject(`Error executing script: ${error.message}`);
@@ -51,5 +53,4 @@ function executeScript(scriptPath) {
       }
     });
   });
-}
 }
