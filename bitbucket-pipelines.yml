@@ -2,9 +2,9 @@
 
 image: node:20
 
-pipelines:
-  default:
-    - step:
+definitions:
+  steps:
+    - step: &build
         name: Build
         # trigger: manual
         runs-on:
@@ -17,7 +17,8 @@ pipelines:
           - npm run build
         artifacts:
           - build/**
-    - parallel:
+    - parallel: &deploy
+        fail-fast: true
         steps:
           - step:
               name: Deploy main folder
@@ -51,7 +52,7 @@ pipelines:
                     REMOTE_PATH: "$INSTALL_PATH/build"
                     LOCAL_PATH: "build/*"
                     DEBUG: "true"
-    - step:
+    - step: &run_remote-script
         name: Run commands on server
         # trigger: manual
         runs-on:
@@ -69,6 +70,17 @@ pipelines:
               ENV_VARS: >-
                 INSTALL_PATH=${INSTALL_PATH}
               DEBUG: "true"
+
+pipelines:
+  default:
+    - step: *build
+    - step: *deploy
+    - step: *run_remote-script
+  custom:
+    manual-daily:
+      - step: *build
+      - step: *deploy
+      - step: *run_remote-script
   branches:
     snarchio:
       - step:
@@ -80,15 +92,6 @@ pipelines:
       - step:
           name: Branches Snarchio Step manual
           trigger: manual
-          caches:
-            - node
-          script:
-            - npm install
-            - npm run build
-  custom:
-    manual:
-      - step:
-          name: Common Manual Step
           caches:
             - node
           script:
