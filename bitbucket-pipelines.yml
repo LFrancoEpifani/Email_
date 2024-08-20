@@ -17,41 +17,38 @@ definitions:
           - npm run build
         artifacts:
           - build/**
-    - parallel: &deploy
-        fail-fast: true
-        steps:
-          - step:
-              name: Deploy main folder
-              # trigger: manual
-              runs-on:
-                - self.hosted
-                - linux
-              script:
-                - pipe: atlassian/scp-deploy:1.5.1
-                  variables:
-                    USER: $USER_SNARCHIO
-                    SSH_KEY: $SSH_KEY_SNARCHIO
-                    SERVER: $SERVER_SNARCHIO
-                    EXTRA_ARGS: ["-P", "123"]
-                    REMOTE_PATH: $INSTALL_PATH
-                    LOCAL_PATH: "${BITBUCKET_CLONE_DIR}/*"
-                    DEBUG: "true"
-          - step:
-              name: Deploy build folder
-              # trigger: manual
-              runs-on:
-                - self.hosted
-                - linux
-              script:
-                - pipe: atlassian/scp-deploy:1.5.1
-                  variables:
-                    USER: $USER_SNARCHIO
-                    SSH_KEY: $SSH_KEY_SNARCHIO
-                    SERVER: $SERVER_SNARCHIO
-                    EXTRA_ARGS: ["-P", "123"]
-                    REMOTE_PATH: "$INSTALL_PATH/build"
-                    LOCAL_PATH: "build/*"
-                    DEBUG: "true"
+    - step: &deploy_main
+        name: Deploy main folder
+        # trigger: manual
+        runs-on:
+          - self.hosted
+          - linux
+        script:
+          - pipe: atlassian/scp-deploy:1.5.1
+            variables:
+              USER: $USER_SNARCHIO
+              SSH_KEY: $SSH_KEY_SNARCHIO
+              SERVER: $SERVER_SNARCHIO
+              EXTRA_ARGS: ["-P", "123"]
+              REMOTE_PATH: $INSTALL_PATH
+              LOCAL_PATH: "${BITBUCKET_CLONE_DIR}/*"
+              DEBUG: "true"
+    - step: &deploy_build
+        name: Deploy build folder
+        # trigger: manual
+        runs-on:
+          - self.hosted
+          - linux
+        script:
+          - pipe: atlassian/scp-deploy:1.5.1
+            variables:
+              USER: $USER_SNARCHIO
+              SSH_KEY: $SSH_KEY_SNARCHIO
+              SERVER: $SERVER_SNARCHIO
+              EXTRA_ARGS: ["-P", "123"]
+              REMOTE_PATH: "$INSTALL_PATH/build"
+              LOCAL_PATH: "build/*"
+              DEBUG: "true"
     - step: &run_remote-script
         name: Run commands on server
         # trigger: manual
@@ -74,12 +71,20 @@ definitions:
 pipelines:
   default:
     - step: *build
-    - step: *deploy
+    - parallel:
+        fail-fast: true
+        steps:
+          - step: *deploy_main
+          - step: *deploy_build
     - step: *run_remote-script
   custom:
     manual-daily:
       - step: *build
-      - step: *deploy
+      - parallel:
+          fail-fast: true
+          steps:
+            - step: *deploy_main
+            - step: *deploy_build
       - step: *run_remote-script
   branches:
     snarchio:
