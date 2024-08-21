@@ -74,9 +74,7 @@ ul {
     color: #1a202c; 
 }
 
-::placeholder{
-    color: white;
-}
+
 
 
 .text-ellipsis {
@@ -100,8 +98,8 @@ ul {
 
 
 input[type='checkbox'] {
-    width: 17px;
-    height: 17px;
+    width: 15px;
+    height: 15px;
     background:white;
     border-radius: 5px;
     border:2px solid #555;
