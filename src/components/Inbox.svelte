@@ -202,8 +202,8 @@
                 <ExpandableText text={email.automaticComments} maxLength={35} />
               </td>
               <td class="px-4 py-2">
-                {#each (email.manualTags ? email.manualTags.split(',') : []) as tag}
-                  <span>{tag}</span>
+                {#each (email.manualTags?.split(',') ?? []) as tag}
+                  <span class="tag {getTagStyles(tag)}">{tag}</span>
                 {/each}
               </td>
               <td class="px-4 py-2 text-lg font-bold">{formatDate(email.emlDate)}</td>
