@@ -163,6 +163,8 @@
     if (tableElement) tableElement.classList.remove('hidden');
     sortedEmails.forEach(email => fetchNotes(email.id)); 
   });
+
+  
 </script>
 
 <main class="h-full w-full overflow-hidden">
@@ -202,7 +204,7 @@
                 <ExpandableText text={email.automaticComments} maxLength={35} />
               </td>
               <td class="px-4 py-2">
-                {#each (email.manualTags?.split(',') ?? []) as tag}
+                {#each (email.manualTags && email.manualTags.length > 0 ? email.manualTags.split(',') : []) as tag}
                   <span class="tag {getTagStyles(tag)}">{tag}</span>
                 {/each}
               </td>
