@@ -46,7 +46,7 @@
 
   async function fetchEmails() {
     try {
-      const response = await fetch('/emails'); // La ruta al endpoint en SvelteKit
+      const response = await fetch('/emails'); 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -54,7 +54,7 @@
       emails = data;
     } catch (error) {
       console.error('Failed to fetch emails:', error);
-      emails = []; // Asegúrate de que emails sea un array en caso de error
+      emails = [];
     }
   }
 
@@ -202,8 +202,8 @@
                 <ExpandableText text={email.automaticComments} maxLength={35} />
               </td>
               <td class="px-4 py-2">
-                {#each email.manualTags?.split(',') || [] as tag}
-                  <span class="tag {getTagStyles(tag)}">{tag}</span>
+                {#each (email.manualTags ? email.manualTags.split(',') : []) as tag}
+                  <span>{tag}</span>
                 {/each}
               </td>
               <td class="px-4 py-2 text-lg font-bold">{formatDate(email.emlDate)}</td>

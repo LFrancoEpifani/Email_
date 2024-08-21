@@ -2,7 +2,6 @@ import re
 import sys
 import json
 import logging
-
 import requests
 import msal
 import html
