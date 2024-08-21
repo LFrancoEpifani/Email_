@@ -10,6 +10,7 @@
   let isDateAsc = false;
   let emails = [];
 
+
   async function handleAnalyzeEmail(emailId) {
   try {
     const response = await fetch('/api/run_script', {
@@ -35,6 +36,7 @@
     console.error('Request failed:', error);
   }
 }
+
 
   $: filteredEmails = emails.filter(email => {
     const matchesTag = $selectedTag ? email.manualTags.includes($selectedTag) : true;

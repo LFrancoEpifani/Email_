@@ -3,21 +3,11 @@
   import Inbox from '../components/Inbox.svelte';
   import { theme } from '../store/store.js';
   import { onMount } from 'svelte';
-  import { fetchEmails } from '$lib/api';
 
   let emails = [];
   let errorMessage = '';
 
   export let data;
-
-  onMount(async () => {
-    try {
-      const fetchedEmails = await fetchEmails();
-      emails = fetchedEmails;
-    } catch (error) {
-      errorMessage = error.message;
-    }
-  });
 
   onMount(() => {
     if (typeof document !== 'undefined') {
