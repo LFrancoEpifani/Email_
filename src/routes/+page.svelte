@@ -3,11 +3,48 @@
   import Inbox from '../components/Inbox.svelte';
   import { theme } from '../store/store.js';
   import { onMount } from 'svelte';
+  import { fetchEmails } from '$lib/api';
 
   let emails = [];
   let errorMessage = '';
 
   export let data;
+
+  
+  async function handleAnalyzeEmail(emailId) {
+  try {
+    const response = await fetch('/api/run_script', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ emailId }) 
+    });
+
+    const result = await response.json();
+
+    console.log('HTTP status code:', response.status); 
+    console.log('Response result:', result); 
+
+    if (response.ok) {
+      console.log('Email analyzed:', result.message);
+      location.reload();
+    } else {
+      console.error('Error:', result.message);
+    }
+  } catch (error) {
+    console.error('Request failed:', error);
+  }
+}
+
+  onMount(async () => {
+    try {
+      const fetchedEmails = await fetchEmails();
+      emails = fetchedEmails;
+    } catch (error) {
+      errorMessage = error.message;
+    }
+  });
 
   onMount(() => {
     if (typeof document !== 'undefined') {
@@ -36,7 +73,7 @@
     {#if errorMessage}
       <p class="error-message">{errorMessage}</p>
     {/if}
-    <Inbox {data}/>
+    <Inbox {data} {handleAnalyzeEmail}/>
   </section>
 </main>
 

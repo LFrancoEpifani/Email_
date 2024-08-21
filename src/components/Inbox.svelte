@@ -9,33 +9,9 @@
   let notes = {};
   let isDateAsc = false;
   let emails = [];
+  export let handleAnalyzeEmail = [];
 
 
-  async function handleAnalyzeEmail(emailId) {
-  try {
-    const response = await fetch('/api/run_script', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ emailId }) 
-    });
-
-    const result = await response.json();
-
-    console.log('HTTP status code:', response.status); 
-    console.log('Response result:', result); 
-
-    if (response.ok) {
-      console.log('Email analyzed:', result.message);
-      location.reload();
-    } else {
-      console.error('Error:', result.message);
-    }
-  } catch (error) {
-    console.error('Request failed:', error);
-  }
-}
 
 
   $: filteredEmails = emails.filter(email => {
