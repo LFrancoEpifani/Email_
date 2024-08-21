@@ -12,8 +12,6 @@
   export let handleAnalyzeEmail = [];
 
 
-
-
   $: filteredEmails = emails.filter(email => {
     const matchesTag = $selectedTag ? email.manualTags.includes($selectedTag) : true;
     const matchesQuery = $searchQuery ? email.emlSubject.toLowerCase().includes($searchQuery.toLowerCase()) : true;
@@ -147,7 +145,7 @@
 
 <main class="h-full w-full overflow-hidden">
   <div class="overflow-y-auto h-full w-full p-2">
-    <table class="bg-white dark:bg-[#424242] w-full hidden rounded-lg" bind:this={tableElement}>
+    <table class="bg-white dark:bg-[#212121] w-full hidden rounded-lg" bind:this={tableElement}>
       <thead class="text-black dark:text-white border-b w-auto">
         <tr class="text-2xl">
           <th class="p-3">
