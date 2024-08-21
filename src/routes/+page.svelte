@@ -19,29 +19,6 @@
     }
   });
 
-async function handleAnalyzeEmail(emailId) {
-  try {
-    const response = await fetch('/api/run_script', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ emailId }) 
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      console.log('Email analyzed:', result.message);
-      location.reload();
-    } else {
-      console.error('Error:', result.message);
-    }
-  } catch (error) {
-    console.error('Request failed:', error);
-  }
-}
-
   onMount(() => {
     if (typeof document !== 'undefined') {
       if ($theme === 'dark') {
@@ -69,7 +46,7 @@ async function handleAnalyzeEmail(emailId) {
     {#if errorMessage}
       <p class="error-message">{errorMessage}</p>
     {/if}
-    <Inbox {data} {handleAnalyzeEmail}/>
+    <Inbox {data}/>
   </section>
 </main>
 

@@ -1,25 +1,62 @@
 <script>
-  import { format, isToday, isThisWeek, isYesterday } from 'date-fns';
+  import { format, isToday } from 'date-fns';
   import ExpandableText from './ExpandableText.svelte';
   import { onMount } from 'svelte';
-  import { emails, selectedEmails, selectedCheckboxes, selectedTag, searchQuery } from '../store/store.js';
+  import { selectedEmails, selectedCheckboxes, selectedTag, searchQuery } from '../store/store.js';
 
-  export let handleAnalyzeEmail = [];
   let errorMessage = '';
   let tableElement;
-  export let data = { data: [] }; 
   let notes = {};
   let isDateAsc = false;
+  let emails = [];
 
+  async function handleAnalyzeEmail(emailId) {
+  try {
+    const response = await fetch('/api/run_script', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ emailId }) 
+    });
 
-  $: filteredEmails = data.data.filter(email => {
+    const result = await response.json();
+
+    console.log('HTTP status code:', response.status); 
+    console.log('Response result:', result); 
+
+    if (response.ok) {
+      console.log('Email analyzed:', result.message);
+      location.reload();
+    } else {
+      console.error('Error:', result.message);
+    }
+  } catch (error) {
+    console.error('Request failed:', error);
+  }
+}
+
+  $: filteredEmails = emails.filter(email => {
     const matchesTag = $selectedTag ? email.manualTags.includes($selectedTag) : true;
     const matchesQuery = $searchQuery ? email.emlSubject.toLowerCase().includes($searchQuery.toLowerCase()) : true;
     return matchesTag && matchesQuery;
   });
 
-
   $: sortedEmails = sortEmailsDate(filteredEmails);
+
+  async function fetchEmails() {
+    try {
+      const response = await fetch('/emails'); // La ruta al endpoint en SvelteKit
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      emails = data;
+    } catch (error) {
+      console.error('Failed to fetch emails:', error);
+      emails = []; // Asegúrate de que emails sea un array en caso de error
+    }
+  }
 
   async function fetchNotes(emailId) {
     try {
@@ -85,9 +122,9 @@
 
   function formatDate(dateStr) {
     const date = new Date(dateStr);
-    if (isToday(date)) return `Today ${format(date, 'HH:mm')}`;
-    if (isYesterday(date)) return `Yesterday ${format(date, 'HH:mm')}`;
-    if (isThisWeek(date)) return format(date, 'EEEE HH:mm');
+    if (isToday(date)) {
+      return format(date, 'HH:mm a'); 
+    }
     return format(date, 'MMM dd');
   }
 
@@ -122,6 +159,7 @@
   $: selectedEmailIds = $selectedEmails;
 
   onMount(() => {
+    fetchEmails(); 
     if (tableElement) tableElement.classList.remove('hidden');
     sortedEmails.forEach(email => fetchNotes(email.id)); 
   });
@@ -164,11 +202,11 @@
                 <ExpandableText text={email.automaticComments} maxLength={35} />
               </td>
               <td class="px-4 py-2">
-                {#each email.manualTags.split(',') as tag}
+                {#each email.manualTags?.split(',') || [] as tag}
                   <span class="tag {getTagStyles(tag)}">{tag}</span>
                 {/each}
               </td>
-              <td class="px-4 py-2 text-lg">{formatDate(email.emlDate)}</td>
+              <td class="px-4 py-2 text-lg font-bold">{formatDate(email.emlDate)}</td>
               <td class="px-4 py-2">
                 <input 
                   class="text-lg w-full p-2 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 

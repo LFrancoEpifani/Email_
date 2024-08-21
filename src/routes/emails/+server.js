@@ -1,20 +1,12 @@
-// src/routes/emails/+server.js
 import { mysqlconnFn } from '$lib/db/mysql';
 
-export async function GET({ url }) {
-    const tag = url.searchParams.get('tag');
+export async function GET() {
     const pool = mysqlconnFn();
 
-    let query = 'SELECT * FROM email';
-    let values = [];
-
-    if (tag) {
-        query += ' WHERE manualTags LIKE ?';
-        values.push(`%${tag}%`);
-    }
-
     try {
-        const [rows] = await pool.execute(query, values);
+        
+        const [rows] = await pool.execute('SELECT * FROM email ORDER BY emlDate DESC');
+
         return new Response(JSON.stringify(rows), {
             status: 200,
             headers: {
