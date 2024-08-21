@@ -1,20 +1,12 @@
 export async function fetchEmails() {
   try {
-    const response = await fetch('/api/run_script', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ scriptName: 'fetch_emails.py' })
-    });
+    const response = await fetch('/emails');
 
-    const result = await response.json();
-
-    if (response.ok) {
-      return result.data;
-    } else {
-      throw new Error(result.message);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch emails: ${response.statusText}`);
     }
+
+    return await response.json();
   } catch (error) {
     throw new Error(`Failed to fetch emails: ${error.message}`);
   }
