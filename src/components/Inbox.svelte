@@ -148,24 +148,24 @@
   <div class="overflow-y-auto h-full w-full ">
     <table class="bg-white dark:bg-[#212121] w-full hidden" bind:this={tableElement}>
       <thead class="text-black dark:text-white border-b w-auto">
-        <tr class="text-[22px]">
+        <tr class="text-[17px]">
           <th class="">
             <input type="checkbox" on:change={toggleAllCheckboxSelections}>
           </th>
           <th class="w-2/12 p-3 text-left">From</th>
-          <th class="w-3/12 p-3 text-left">Subject</th>
-          <th class="w-4/12 p-3 text-left">Text</th>
-          <th class="w-2/12 p-4 text-left">Tags</th>
+          <th class="w-4/12 p-3 text-left">Subject</th>
+          <th class="w-2/12 p-3 text-left">Text</th>
+          <th class="w-1/12 p-3 text-left">Tags</th>
           <th class="w-1/12 p-3 text-left">
             <div class="flex items-center">
               Date
               <button on:click={toggleDateSort} class="ml-2 focus:outline-none">
-                <i class={`fa-solid text-xl text-gray-400 ${isDateAsc ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+                <i class={`fa-solid text-sm text-gray-800 ${isDateAsc ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
               </button>
             </div>
           </th>
-          <th class="w-2/12 p-3 text-left">Notes</th>
-          <th class="w-1/12 p-3 text-left"></th>
+          <th class="w-1/12 p-3 text-left">Notes</th>
+          <th class="w-2/12 p-3 text-left"></th>
         </tr>
       </thead>
       <tbody class="text-gray-700 dark:text-white">
@@ -175,20 +175,20 @@
               <td class="p-3">
                 <input class="my-4" type="checkbox" checked={selectedCheckboxIds.includes(email.id)} on:change={() => toggleCheckboxSelection(email.id)}>
               </td>
-              <td class="text-[18px] font-bold">{email.emlFrom}</td>
-              <td class="text-xl font-regular text-[#4a8cd3]">{email.emlSubject}</td>
-              <td class="text-lg">
-                <ExpandableText text={email.automaticComments} maxLength={100} />
+              <td class="text-[14px] font-bold">{email.emlFrom}</td>
+              <td class="text-[16px] font-regular text-[#4a8cd3]">{email.emlSubject}</td>
+              <td class="text-[14px]">
+                <ExpandableText text={email.automaticComments} maxLength={60} />
               </td>
               <td class="">
                 {#each (email.manualTags && email.manualTags.length > 0 ? email.manualTags.split(',') : []) as tag}
-                  <span class="tag {getTagStyles(tag)}">{tag}</span>
+                  <span class="p-1 text-xs border m-1 rounded-sm {getTagStyles(tag)}">{tag}</span>
                 {/each}
               </td>
-              <td class="text-lg font-bold">{formatDate(email.emlDate)}</td>
+              <td class="px-4 text-sm font-bold">{formatDate(email.emlDate)}</td>
               <td class="">
                 <input 
-                  class="text-lg w-full p-2 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
+                  class="text-lg w-[150px] p-2 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
                   type="text" 
                   on:keydown={(e) => { if (e.key === 'Enter' && e.target.value.trim() !== '') { addNoteToEmail(email.id, e.target.value.trim()); e.target.value=''; } }}
                 />
@@ -206,7 +206,7 @@
                 </ul>
               </td>
               <td class="px-4 py-2">
-                <div class="flex gap-2 text-xl items-center">
+                <div class="flex gap-2 text-md items-center">
                   <button class:btn-red={selectedEmailIds.includes(email.id)} on:click={() => toggleFlagSelection(email.id)}>
                     <i class="fa-solid fa-flag cursor-pointer"></i>
                   </button>
@@ -231,13 +231,7 @@
 </main>
 
 <style>
-  .tag {
-    display: inline-block;
-    margin-right: 0.5rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
-    border: 1px solid;
-  }
+ 
 
   .error-message {
     color: red;

@@ -17,7 +17,7 @@
     {/if}
   </div>
   {#if text.length > maxLength}
-    <button class="toggle-button text-[#1abc9c] dark:text-[#1abc9c]" on:click={toggleExpand} aria-expanded={isExpanded}>
+    <button class="text-sm toggle-button text-[#1abc9c] dark:text-[#1abc9c]" on:click={toggleExpand} aria-expanded={isExpanded}>
       {isExpanded ? 'Show less' : 'Show more'}
     </button>
   {/if}
