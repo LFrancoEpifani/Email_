@@ -10,6 +10,7 @@
   let isDateAsc = false;
   let emails = [];
   export let handleAnalyzeEmail = [];
+  
 
 
   $: filteredEmails = emails.filter(email => {
@@ -144,18 +145,18 @@
 </script>
 
 <main class="h-full w-full overflow-hidden">
-  <div class="overflow-y-auto h-full w-full p-2">
-    <table class="bg-white dark:bg-[#212121] w-full hidden rounded-lg" bind:this={tableElement}>
+  <div class="overflow-y-auto h-full w-full ">
+    <table class="bg-white dark:bg-[#212121] w-full hidden" bind:this={tableElement}>
       <thead class="text-black dark:text-white border-b w-auto">
-        <tr class="text-2xl">
-          <th class="p-3">
+        <tr class="text-[22px]">
+          <th class="">
             <input type="checkbox" on:change={toggleAllCheckboxSelections}>
           </th>
-          <th class="w-2/12 p-5 text-left">From</th>
-          <th class="w-3/12 p-5 text-left">Subject</th>
-          <th class="w-3/12 p-5 text-left">Text</th>
-          <th class="w-2/12 p-5 text-left">Tags</th>
-          <th class="w-1/12 p-5 text-left">
+          <th class="w-2/12 p-3 text-left">From</th>
+          <th class="w-3/12 p-3 text-left">Subject</th>
+          <th class="w-4/12 p-3 text-left">Text</th>
+          <th class="w-2/12 p-4 text-left">Tags</th>
+          <th class="w-1/12 p-3 text-left">
             <div class="flex items-center">
               Date
               <button on:click={toggleDateSort} class="ml-2 focus:outline-none">
@@ -163,8 +164,8 @@
               </button>
             </div>
           </th>
-          <th class="w-2/12 p-5 text-left">Notes</th>
-          <th class="w-1/12 p-5 text-left"></th>
+          <th class="w-2/12 p-3 text-left">Notes</th>
+          <th class="w-1/12 p-3 text-left"></th>
         </tr>
       </thead>
       <tbody class="text-gray-700 dark:text-white">
@@ -174,18 +175,18 @@
               <td class="p-3">
                 <input class="my-4" type="checkbox" checked={selectedCheckboxIds.includes(email.id)} on:change={() => toggleCheckboxSelection(email.id)}>
               </td>
-              <td class="px-4 py-2 text-[18px] font-bold">{email.emlFrom}</td>
-              <td class="px-4 py-2 text-xl font-regular text-[#4a8cd3]">{email.emlSubject}</td>
-              <td class="px-4 py-2 text-lg">
-                <ExpandableText text={email.automaticComments} maxLength={35} />
+              <td class="text-[18px] font-bold">{email.emlFrom}</td>
+              <td class="text-xl font-regular text-[#4a8cd3]">{email.emlSubject}</td>
+              <td class="text-lg">
+                <ExpandableText text={email.automaticComments} maxLength={100} />
               </td>
-              <td class="px-4 py-2">
+              <td class="">
                 {#each (email.manualTags && email.manualTags.length > 0 ? email.manualTags.split(',') : []) as tag}
                   <span class="tag {getTagStyles(tag)}">{tag}</span>
                 {/each}
               </td>
-              <td class="px-4 py-2 text-lg font-bold">{formatDate(email.emlDate)}</td>
-              <td class="px-4 py-2">
+              <td class="text-lg font-bold">{formatDate(email.emlDate)}</td>
+              <td class="">
                 <input 
                   class="text-lg w-full p-2 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
                   type="text" 
@@ -195,7 +196,7 @@
                   {#if notes[email.id]}
                     {#each notes[email.id] as note (note.id)}
                       <li class="flex m-3 gap-3 items-start">
-                        <ExpandableText text={note.note} maxLength={35} />
+                        <ExpandableText text={note.note} maxLength={100} />
                         <button on:click={() => deleteNoteFromEmail(email.id, note.id)}>
                           <i class="fa-solid fa-trash cursor-pointer"></i>
                         </button>

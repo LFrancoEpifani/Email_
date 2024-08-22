@@ -22,18 +22,13 @@
     });
 
     const result = await response.json();
-
-    console.log('HTTP status code:', response.status); 
-    console.log('Response result:', result); 
-
     if (response.ok) {
-      console.log('Email analyzed:', result.message);
       location.reload();
     } else {
-      console.error('Error:', result.message);
+   
     }
   } catch (error) {
-    console.error('Request failed:', error);
+  
   }
 }
 

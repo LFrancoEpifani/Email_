@@ -86,7 +86,7 @@ def main():
 
     if "access_token" in result:
         response = requests.get(
-            config["endpoint"] + "/mobile@Paxis.org/messages?$top=10",
+            config["endpoint"] + "/mobile@Paxis.org/messages?$top=15",
             headers={"Authorization": "Bearer " + result["access_token"]}
         )
 

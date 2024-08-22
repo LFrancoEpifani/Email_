@@ -27,6 +27,7 @@
 		"date-fns": "^3.6.0",
 		"dotenv": "^16.4.5",
 		"mysql2": "^3.11.0",
+		"node-cron": "^3.0.3",
 		"node-fetch": "^3.3.2",
 		"svelte-local-storage-store": "^0.6.4",
 		"svelte-routing": "^2.13.0"

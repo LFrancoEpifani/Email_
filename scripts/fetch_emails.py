@@ -1,8 +1,14 @@
+import sys
+import io
 import mysql.connector
 from mysql.connector import Error
 from datetime import datetime
 from dotenv import load_dotenv
 import os
+import json
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 load_dotenv()
 
@@ -46,7 +52,7 @@ def main():
     connection = create_db_connection()
     if connection:
         emails = fetch_emails(connection)
-        print(emails)  
+        print(json.dumps(emails, ensure_ascii=False, indent=4))  
         connection.close()
 
 if __name__ == "__main__":

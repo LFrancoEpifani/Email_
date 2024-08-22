@@ -1,6 +1,6 @@
 <script>
   export let text = "";
-  export let maxLength = 100;
+  export let maxLength = 200;
   let isExpanded = false;
 
   function toggleExpand() {
