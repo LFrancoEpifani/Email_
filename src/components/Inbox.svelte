@@ -149,13 +149,13 @@
     <table class="bg-white dark:bg-[#212121] w-full hidden" bind:this={tableElement}>
       <thead class="text-black dark:text-white border-b w-auto">
         <tr class="text-[17px]">
-          <th class="">
+          <th class="border-r border-gray-300 dark:border-gray-700"> 
             <input type="checkbox" on:change={toggleAllCheckboxSelections}>
           </th>
           <th class="w-2/12 p-3 text-left">From</th>
-          <th class="w-4/12 p-3 text-left">Subject</th>
-          <th class="w-2/12 p-3 text-left">Text</th>
-          <th class="w-1/12 p-3 text-left">Tags</th>
+          <th class="w-3/12 p-3 text-left">Subject</th>
+          <th class="w-3/12 p-3 text-left">Text</th>
+          <th class="w-2/12 p-3 text-left">Tags</th>
           <th class="w-1/12 p-3 text-left">
             <div class="flex items-center">
               Date
@@ -172,11 +172,11 @@
         {#if sortedEmails.length > 0}
           {#each sortedEmails as email}
             <tr class="border-b border-gray-200 hover:bg-gray-100 hover:dark:bg-gray-700">
-              <td class="p-3">
-                <input class="my-4" type="checkbox" checked={selectedCheckboxIds.includes(email.id)} on:change={() => toggleCheckboxSelection(email.id)}>
+              <td class="p-3 border-r border-gray-300 dark:border-gray-700">
+                <input class="" type="checkbox" checked={selectedCheckboxIds.includes(email.id)} on:change={() => toggleCheckboxSelection(email.id)}>
               </td>
-              <td class="text-[14px] font-bold">{email.emlFrom}</td>
-              <td class="text-[16px] font-regular text-[#4a8cd3]">{email.emlSubject}</td>
+              <td class="text-[15px] font-bold px-2">{email.emlFrom}</td>
+              <td class="text-[15px] font-regular text-[#4a8cd3] px-2">{email.emlSubject}</td>
               <td class="text-[14px]">
                 <ExpandableText text={email.automaticComments} maxLength={60} />
               </td>
@@ -232,8 +232,7 @@
 
 <style>
  
-
-  .error-message {
+ .error-message {
     color: red;
     margin-bottom: 1rem;
   }
