@@ -7,11 +7,18 @@
   let errorMessage = '';
   let tableElement;
   let notes = {};
-  let isDateAsc = false;
   let emails = [];
-  export let handleAnalyzeEmail = [];
-  
+  let isDateAsc = false;
+  let handleAnalyzeEmail = [];
 
+  onMount(() => {
+    if (localStorage.getItem("isDateAsc") !== null) {
+      isDateAsc = JSON.parse(localStorage.getItem("isDateAsc"));
+    }
+    fetchEmails(); 
+    if (tableElement) tableElement.classList.remove('hidden');
+    sortedEmails.forEach(email => fetchNotes(email.id)); 
+  });
 
   $: filteredEmails = emails.filter(email => {
     const matchesTag = $selectedTag ? email.manualTags.includes($selectedTag) : true;
@@ -94,6 +101,7 @@
 
   function toggleDateSort() {
     isDateAsc = !isDateAsc;
+    localStorage.setItem("isDateAsc", JSON.stringify(isDateAsc));
     sortedEmails = sortEmailsDate(filteredEmails);
   }
 
@@ -108,8 +116,8 @@
   function getTagStyles(tag) {
     const styles = {
       TechRequest: 'bg-[#E6E4FB] text-[#463C86] border-[#A79CF1]',
-      Certificate: 'bg-[#FBF6D8] text-[#8b7514] border-[#EBD968]',
-      Forwarded: 'bg-[#baf1d6] text-[#2B8E28] border-[#DCF7E9]',
+      Certificate: 'bg-[#FBF6D8] text-[#8b7514] border-[#e1cf59]',
+      Forwarded: 'bg-[#baf1d6] text-[#2B8E28] border-[#3f976a]',
       Registration: 'bg-[#FFDDCC] text-[#D47528] border-[#F3B180]'
     };
     return styles[tag] || 'bg-gray-300 text-black border-gray-500'; 
@@ -135,21 +143,13 @@
   $: selectedCheckboxIds = $selectedCheckboxes;
   $: selectedEmailIds = $selectedEmails;
 
-  onMount(() => {
-    fetchEmails(); 
-    if (tableElement) tableElement.classList.remove('hidden');
-    sortedEmails.forEach(email => fetchNotes(email.id)); 
-  });
-
-  
 </script>
-
 <main class="h-full w-full overflow-hidden">
   <div class="overflow-y-auto h-full w-full ">
     <table class="bg-white dark:bg-[#212121] w-full hidden" bind:this={tableElement}>
-      <thead class="text-black dark:text-white border-b w-auto">
+      <thead class="text-black dark:text-white border-b border-black dark:border-white w-auto">
         <tr class="text-[17px]">
-          <th class="border-r border-gray-300 dark:border-gray-700"> 
+          <th class=""> 
             <input type="checkbox" on:change={toggleAllCheckboxSelections}>
           </th>
           <th class="w-2/12 p-3 text-left">From</th>
@@ -160,7 +160,7 @@
             <div class="flex items-center">
               Date
               <button on:click={toggleDateSort} class="ml-2 focus:outline-none">
-                <i class={`fa-solid text-sm text-gray-800 ${isDateAsc ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+                <i class={`fa-solid text-sm text-gray-800 dark:text-white ${isDateAsc ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
               </button>
             </div>
           </th>
@@ -171,24 +171,24 @@
       <tbody class="text-gray-700 dark:text-white">
         {#if sortedEmails.length > 0}
           {#each sortedEmails as email}
-            <tr class="border-b border-gray-200 hover:bg-gray-100 hover:dark:bg-gray-700">
-              <td class="p-3 border-r border-gray-300 dark:border-gray-700">
+            <tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100 hover:dark:bg-gray-700">
+              <td class="p-2">
                 <input class="" type="checkbox" checked={selectedCheckboxIds.includes(email.id)} on:change={() => toggleCheckboxSelection(email.id)}>
               </td>
               <td class="text-[15px] font-bold px-2">{email.emlFrom}</td>
-              <td class="text-[15px] font-regular text-[#4a8cd3] px-2">{email.emlSubject}</td>
-              <td class="text-[14px]">
+              <td class="text-[16px] font-medium text-[#000000] dark:text-[#FFFFFF] px-2">{email.emlSubject}</td>
+              <td class="text-[14px] py-2">
                 <ExpandableText text={email.automaticComments} maxLength={60} />
               </td>
               <td class="">
                 {#each (email.manualTags && email.manualTags.length > 0 ? email.manualTags.split(',') : []) as tag}
-                  <span class="p-1 text-xs border m-1 rounded-sm {getTagStyles(tag)}">{tag}</span>
+                  <span class="p-1.5 text-sm border m-2 rounded-sm {getTagStyles(tag)}">{tag}</span>
                 {/each}
               </td>
               <td class="px-4 text-sm font-bold">{formatDate(email.emlDate)}</td>
               <td class="">
                 <input 
-                  class="text-lg w-[150px] p-2 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
+                  class="text-lg w-[180px] p-2 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
                   type="text" 
                   on:keydown={(e) => { if (e.key === 'Enter' && e.target.value.trim() !== '') { addNoteToEmail(email.id, e.target.value.trim()); e.target.value=''; } }}
                 />
@@ -196,7 +196,7 @@
                   {#if notes[email.id]}
                     {#each notes[email.id] as note (note.id)}
                       <li class="flex m-3 gap-3 items-start">
-                        <ExpandableText text={note.note} maxLength={100} />
+                        <ExpandableText text={note.note} maxLength={35} />
                         <button on:click={() => deleteNoteFromEmail(email.id, note.id)}>
                           <i class="fa-solid fa-trash cursor-pointer"></i>
                         </button>
@@ -231,9 +231,5 @@
 </main>
 
 <style>
- 
- .error-message {
-    color: red;
-    margin-bottom: 1rem;
-  }
+
 </style>

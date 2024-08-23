@@ -47,3 +47,10 @@ theme.subscribe(value => {
   }
 });
 
+let isDateAsc = isLocalStorageAvailable() ? JSON.parse(localStorage.getItem("isDateAsc")) || false : false;
+
+function toggleDateSort() {
+  isDateAsc = !isDateAsc;
+  localStorage.setItem("isDateAsc", JSON.stringify(isDateAsc));
+  sortedEmails = sortEmailsDate(filteredEmails);
+}
