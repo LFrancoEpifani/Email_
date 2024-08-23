@@ -149,7 +149,7 @@
 <main class="h-full w-full overflow-hidden bg-white dark:bg-black text-black dark:text-white">
   <div class="overflow-y-auto h-full w-full">
     <table class="bg-white dark:bg-gray-900 w-full hidden" bind:this={tableElement}>
-      <thead class="text-black dark:text-white border-b border-gray-300 dark:border-gray-700 bg-[#F3F4F6]">
+      <thead class="text-black dark:text-white dark:bg-[#1C1E21] border-b border-gray-300 dark:border-gray-700 bg-[#F3F4F6]">
         <tr class="text-[17px]">
           <th class="p-3">
             <input type="checkbox" on:change={toggleAllCheckboxSelections} class="cursor-pointer">
