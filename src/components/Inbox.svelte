@@ -9,7 +9,7 @@
   let notes = {};
   let emails = [];
   let isDateAsc = false;
-  let handleAnalyzeEmail = [];
+  export let handleAnalyzeEmail = [];
 
   onMount(() => {
     if (localStorage.getItem("isDateAsc") !== null) {
@@ -34,27 +34,28 @@
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const data = await response.json();
+     const data = await response.json();
       emails = data;
     } catch (error) {
-      console.error('Failed to fetch emails:', error);
       emails = [];
     }
   }
 
   async function fetchNotes(emailId) {
-    try {
-      const response = await fetch(`/api/notes?emailId=${emailId}`);
-      const result = await response.json();
-      notes = {
-        ...notes,
-        [emailId]: result.notes || []
-      };
-    } catch (error) {
-      console.error(`Error fetching notes for emailId ${emailId}:`, error);
-    }
+  try {
+    const response = await fetch(`/api/notes?emailId=${emailId}`);
+    const result = await response.json();
+    console.log('Fetched notes:', result.notes); 
+    notes = {
+      ...notes,
+      [emailId]: result.notes || []
+    };
+  } catch (error) {
+    console.error(`Error fetching notes for emailId ${emailId}:`, error);
   }
+}
 
+  
   async function addNoteToEmail(emailId, note) {
     try {
       const response = await fetch('/api/notes', {
@@ -73,6 +74,7 @@
       console.error(`Error adding note to emailId ${emailId}:`, error);
     }
   }
+
 
   async function deleteNoteFromEmail(emailId, noteId) {
     try {
@@ -115,10 +117,10 @@
 
   function getTagStyles(tag) {
     const styles = {
-      TechRequest: 'bg-[#E6E4FB] text-[#463C86] border-[#A79CF1]',
-      Certificate: 'bg-[#FBF6D8] text-[#8b7514] border-[#e1cf59]',
-      Forwarded: 'bg-[#baf1d6] text-[#2B8E28] border-[#3f976a]',
-      Registration: 'bg-[#FFDDCC] text-[#D47528] border-[#F3B180]'
+      TechRequest: 'bg-purple-100 text-purple-800 border-purple-300',
+      Certificate: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+      Forwarded: 'bg-green-100 text-green-800 border-green-300',
+      Registration: 'bg-orange-100 text-orange-800 border-orange-300'
     };
     return styles[tag] || 'bg-gray-300 text-black border-gray-500'; 
   }
@@ -142,79 +144,80 @@
 
   $: selectedCheckboxIds = $selectedCheckboxes;
   $: selectedEmailIds = $selectedEmails;
-
 </script>
-<main class="h-full w-full overflow-hidden">
-  <div class="overflow-y-auto h-full w-full ">
-    <table class="bg-white dark:bg-[#212121] w-full hidden" bind:this={tableElement}>
-      <thead class="text-black dark:text-white border-b border-black dark:border-white w-auto">
+
+<main class="h-full w-full overflow-hidden bg-white dark:bg-black text-black dark:text-white">
+  <div class="overflow-y-auto h-full w-full">
+    <table class="bg-white dark:bg-gray-900 w-full hidden" bind:this={tableElement}>
+      <thead class="text-black dark:text-white border-b border-gray-300 dark:border-gray-700 bg-[#F3F4F6]">
         <tr class="text-[17px]">
-          <th class=""> 
-            <input type="checkbox" on:change={toggleAllCheckboxSelections}>
+          <th class="p-3">
+            <input type="checkbox" on:change={toggleAllCheckboxSelections} class="cursor-pointer">
           </th>
           <th class="w-2/12 p-3 text-left">From</th>
           <th class="w-3/12 p-3 text-left">Subject</th>
           <th class="w-3/12 p-3 text-left">Text</th>
           <th class="w-2/12 p-3 text-left">Tags</th>
           <th class="w-1/12 p-3 text-left">
-            <div class="flex items-center">
+            <div class="flex items-center cursor-pointer">
               Date
               <button on:click={toggleDateSort} class="ml-2 focus:outline-none">
                 <i class={`fa-solid text-sm text-gray-800 dark:text-white ${isDateAsc ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
               </button>
             </div>
           </th>
-          <th class="w-1/12 p-3 text-left">Notes</th>
+          <th class="w-2/12 p-3 text-left">Notes</th>
           <th class="w-2/12 p-3 text-left"></th>
         </tr>
       </thead>
-      <tbody class="text-gray-700 dark:text-white">
+      <tbody class="text-gray-700 dark:text-gray-300">
         {#if sortedEmails.length > 0}
           {#each sortedEmails as email}
-            <tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-100 hover:dark:bg-gray-700">
+            <tr class="border-b border-gray-300 dark:border-gray-700 hover:bg-gray-50 hover:dark:bg-gray-800 transition-all">
               <td class="p-2">
-                <input class="" type="checkbox" checked={selectedCheckboxIds.includes(email.id)} on:change={() => toggleCheckboxSelection(email.id)}>
+                <input type="checkbox" checked={selectedCheckboxIds.includes(email.id)} on:change={() => toggleCheckboxSelection(email.id)} class="cursor-pointer">
               </td>
-              <td class="text-[15px] font-bold px-2">{email.emlFrom}</td>
-              <td class="text-[16px] font-medium text-[#000000] dark:text-[#FFFFFF] px-2">{email.emlSubject}</td>
-              <td class="text-[14px] py-2">
+              <td class="text-[15px] font-bold px-2 truncate">{email.emlFrom}</td>
+              <td class="text-[16px] font-medium text-black dark:text-white px-2 truncate">{email.emlSubject}</td>
+              <td class="text-[14px] py-2 truncate">
                 <ExpandableText text={email.automaticComments} maxLength={60} />
               </td>
-              <td class="">
+              <td class="px-2">
                 {#each (email.manualTags && email.manualTags.length > 0 ? email.manualTags.split(',') : []) as tag}
-                  <span class="p-1.5 text-sm border m-2 rounded-sm {getTagStyles(tag)}">{tag}</span>
+                  <span class="p-1.5 text-xs border m-1 rounded-sm {getTagStyles(tag)}">{tag}</span>
                 {/each}
               </td>
               <td class="px-4 text-sm font-bold">{formatDate(email.emlDate)}</td>
-              <td class="">
+              <td class="px-2">
                 <input 
-                  class="text-lg w-[180px] p-2 border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
+                  class="text-sm w-[140px] border-b border-gray-300 bg-transparent focus:outline-none dark:border-gray-700" 
                   type="text" 
+                  placeholder="Add a note..."
                   on:keydown={(e) => { if (e.key === 'Enter' && e.target.value.trim() !== '') { addNoteToEmail(email.id, e.target.value.trim()); e.target.value=''; } }}
                 />
-                <ul>
+                <ul class="mt-2">
                   {#if notes[email.id]}
-                    {#each notes[email.id] as note (note.id)}
-                      <li class="flex m-3 gap-3 items-start">
-                        <ExpandableText text={note.note} maxLength={35} />
-                        <button on:click={() => deleteNoteFromEmail(email.id, note.id)}>
-                          <i class="fa-solid fa-trash cursor-pointer"></i>
-                        </button>
-                      </li>
-                    {/each}
-                  {/if}
+                  {#each notes[email.id] as note (note.id)}
+                    <li class="flex justify-between items-center gap-3 p-2 bg-gray-50 dark:bg-gray-800 rounded-md shadow-sm">
+                      <ExpandableText text={note.note} maxLength={35} />
+                      <button on:click={() => deleteNoteFromEmail(email.id, note.id)} class="text-red-600 hover:text-red-800">
+                        <i class="fa-solid fa-trash cursor-pointer"></i>
+                      </button>
+                    </li>
+                  {/each}
+                {/if}
                 </ul>
               </td>
               <td class="px-4 py-2">
                 <div class="flex gap-2 text-md items-center">
-                  <button class:btn-red={selectedEmailIds.includes(email.id)} on:click={() => toggleFlagSelection(email.id)}>
+                  <button class:btn-red={selectedEmailIds.includes(email.id)} on:click={() => toggleFlagSelection(email.id)} class="">
                     <i class="fa-solid fa-flag cursor-pointer"></i>
                   </button>
-                  <button  on:click={() => { handleAnalyzeEmail(email.id)}} class="">
+                  <button on:click={() => { handleAnalyzeEmail(email.id)}} class="text-gray-400">
                     <i class="fa-solid fa-refresh"></i>
                   </button>
                   {#if errorMessage}
-                    <p class="error-message">{errorMessage}</p>
+                    <p class="error-message text-red-600 mt-2">{errorMessage}</p>
                   {/if}
                 </div>
               </td>
@@ -222,14 +225,10 @@
           {/each}
         {:else}
           <tr>
-            <td colspan="8" class="text-center p-5">No emails found</td>
+            <td colspan="8" class="text-center p-5 text-gray-500 dark:text-gray-400">No emails found</td>
           </tr>
         {/if}
       </tbody>
     </table>
   </div>
 </main>
-
-<style>
-
-</style>

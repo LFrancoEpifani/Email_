@@ -61,28 +61,27 @@ export async function DELETE({ url }) {
   }
 }
 
-// Función para obtener notas por emailId
+
 async function fetchNotesByEmailId(mysqlconn, emailId) {
   const [rows] = await mysqlconn.execute('SELECT * FROM email_notes WHERE email_id = ?', [emailId]);
   return rows;
 }
 
-// Función para obtener una nota por noteId
+
 async function fetchNoteById(mysqlconn, noteId) {
   const [rows] = await mysqlconn.execute('SELECT * FROM email_notes WHERE id = ?', [noteId]);
   return rows[0];
 }
 
-// Función para agregar una nota a un email
 async function addNoteToEmail(mysqlconn, emailId, note) {
   const [result] = await mysqlconn.execute(
     'INSERT INTO email_notes (email_id, note) VALUES (?, ?)',
     [emailId, note]
   );
+  console.log('New note inserted with ID:', result.insertId); 
   return { id: result.insertId, email_id: emailId, note };
 }
 
-// Función para eliminar una nota por noteId
 async function deleteNoteById(mysqlconn, noteId) {
   await mysqlconn.execute('DELETE FROM email_notes WHERE id = ?', [noteId]);
 }
