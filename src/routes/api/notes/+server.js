@@ -78,7 +78,6 @@ async function addNoteToEmail(mysqlconn, emailId, note) {
     'INSERT INTO email_notes (email_id, note) VALUES (?, ?)',
     [emailId, note]
   );
-  console.log('New note inserted with ID:', result.insertId); 
   return { id: result.insertId, email_id: emailId, note };
 }
 
