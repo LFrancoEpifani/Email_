@@ -14,7 +14,48 @@ function isLocalStorageAvailable() {
 export const emails = writable([]);  
 export const selectedTag = writable(''); 
 export const searchQuery = writable('');
+export const notesStore = writable({});
 
+export async function loadNotes(emailId) {
+  try {
+    const response = await fetch(`/api/notes?emailId=${emailId}`);
+    const result = await response.json();
+    notesStore.update(notes => ({
+      ...notes,
+      [emailId]: result.notes || []
+    }));
+  } catch (error) {
+    console.error(`Error loading notes for emailId ${emailId}:`, error);
+  }
+}
+
+export async function addNoteToEmail(emailId, note) {
+  try {
+    const response = await fetch('/api/notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emailId, note })
+    });
+    const result = await response.json();
+    if (result.success) {
+      await loadNotes(emailId); 
+    }
+  } catch (error) {
+    console.error(`Error adding note to emailId ${emailId}:`, error);
+  }
+}
+
+export async function deleteNoteFromEmail(emailId, noteId) {
+  try {
+    const response = await fetch(`/api/notes?noteId=${noteId}`, { method: 'DELETE' });
+    const result = await response.json();
+    if (result.success) {
+      await loadNotes(emailId); 
+    }
+  } catch (error) {
+    console.error(`Error deleting note from emailId ${emailId}:`, error);
+  }
+}
 
 export const selectedEmails = writable(
   isLocalStorageAvailable() ? JSON.parse(localStorage.getItem("selectedEmails")) || [] : []

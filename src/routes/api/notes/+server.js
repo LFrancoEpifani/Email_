@@ -3,7 +3,7 @@ import { mysqlconnFn } from "$lib/db/mysql";
 export async function GET({ url }) {
   const emailId = url.searchParams.get('emailId');
   const noteId = url.searchParams.get('noteId');
-  let mysqlconn = await mysqlconnFn();
+  const mysqlconn = await mysqlconnFn();
 
   try {
     if (emailId) {
@@ -17,9 +17,8 @@ export async function GET({ url }) {
     }
 
     return new Response(JSON.stringify({ error: 'Invalid query parameters' }), { status: 400 });
-
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching notes:', error);
     return new Response(JSON.stringify({ error: 'Failed to fetch notes' }), { status: 500 });
   }
 }
@@ -32,13 +31,12 @@ export async function POST({ request }) {
       return new Response(JSON.stringify({ error: 'Missing emailId or note' }), { status: 400 });
     }
 
-    let mysqlconn = await mysqlconnFn();
+    const mysqlconn = await mysqlconnFn();
     const newNote = await addNoteToEmail(mysqlconn, emailId, note);
 
     return new Response(JSON.stringify({ success: true, note: newNote }), { status: 201 });
-
   } catch (error) {
-    console.error(error);
+    console.error('Error adding note:', error);
     return new Response(JSON.stringify({ error: 'Failed to add note' }), { status: 500 });
   }
 }
@@ -51,12 +49,11 @@ export async function DELETE({ url }) {
   }
 
   try {
-    let mysqlconn = await mysqlconnFn();
+    const mysqlconn = await mysqlconnFn();
     await deleteNoteById(mysqlconn, noteId);
     return new Response(JSON.stringify({ success: true }), { status: 200 });
-
   } catch (error) {
-    console.error(error);
+    console.error('Error deleting note:', error);
     return new Response(JSON.stringify({ error: 'Failed to delete note' }), { status: 500 });
   }
 }
@@ -66,7 +63,6 @@ async function fetchNotesByEmailId(mysqlconn, emailId) {
   const [rows] = await mysqlconn.execute('SELECT * FROM email_notes WHERE email_id = ?', [emailId]);
   return rows;
 }
-
 
 async function fetchNoteById(mysqlconn, noteId) {
   const [rows] = await mysqlconn.execute('SELECT * FROM email_notes WHERE id = ?', [noteId]);

@@ -41,7 +41,7 @@
 
 
   
-    <div class="absolute top-2 right-4 md:static md:ml-4 bg-[#053B3F] rounded-md py-1.5 px-5 md:mx-3 flex gap-3">
+    <div class="absolute top-2 right-4 md:static md:ml-3 bg-[#053B3F] rounded-md py-1.5 px-5 md:mx-2 flex gap-3">
       <button 
         class="text-white dark:text-white focus:outline-none"
         aria-label="User Profile"

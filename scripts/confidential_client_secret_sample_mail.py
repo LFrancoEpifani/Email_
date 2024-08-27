@@ -20,7 +20,6 @@ app = msal.ConfidentialClientApplication(
 )
 result = None
 
-result = app.acquire_token_silent(config["scope"], account=None)
 
 if not result:
     logging.info("No suitable token exists in cache. Let's get a new one from AAD.")
